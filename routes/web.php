@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ArticleController; 
+use App\Http\Controllers\KendaraanController;  
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+// Route untuk artikel
+Route::get('/articles', [ArticleController::class, 'index']);  
+Route::get('/articles/{id}', [ArticleController::class, 'show']);
+Route::resource('kendaraans', KendaraanController::class); 
