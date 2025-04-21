@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController; 
 use App\Http\Controllers\KendaraanController;  
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,10 +15,8 @@ use App\Http\Controllers\KendaraanController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index']);
 // Route untuk artikel
 Route::get('/articles', [ArticleController::class, 'index']);  
 Route::get('/articles/{id}', [ArticleController::class, 'show']);
-Route::resource('kendaraans', KendaraanController::class); 
+Route::resource('kendaraans', KendaraanController::class);

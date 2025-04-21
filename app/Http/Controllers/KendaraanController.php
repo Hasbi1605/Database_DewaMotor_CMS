@@ -50,18 +50,44 @@ class KendaraanController extends Controller
     public function edit($id)  
     {  
         $kendaraan = Kendaraan::find($id);  
+        if (!$kendaraan) {  
+            return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');  
+        }  
         return view('kendaraans.edit', compact('kendaraan'));  
     }  
 
     public function update(Request $request, $id)  
     {  
-        // Logika untuk memperbarui kendaraan  
-        return redirect()->route('kendaraans.index');  
+        $validatedData = $request->validate([  
+            'nomor_rangka' => 'required|string|max:255',  
+            'nomor_mesin' => 'required|string|max:255',  
+            'nomor_polisi' => 'required|string|max:255',  
+            'merek' => 'required|string|max:255',  
+            'model' => 'required|string|max:255',  
+            'tahun_pembutan' => 'required|integer',  
+            'harga_modal' => 'required|numeric',  
+            'harga_jual' => 'required|numeric',  
+        ]);  
+
+        $kendaraan = Kendaraan::find($id);  
+        if (!$kendaraan) {  
+            return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');  
+        }  
+
+        $kendaraan->update($validatedData);  
+
+        return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil diperbarui.');  
     }  
 
     public function destroy($id)  
     {  
-        // Logika untuk menghapus kendaraan  
-        return redirect()->route('kendaraans.index');  
+        $kendaraan = Kendaraan::find($id);  
+        if (!$kendaraan) {  
+            return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');  
+        }  
+
+        $kendaraan->delete();  
+
+        return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil dihapus.');  
     }  
-}  
+}
