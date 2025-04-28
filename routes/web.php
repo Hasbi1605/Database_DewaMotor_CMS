@@ -20,3 +20,7 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/articles', [ArticleController::class, 'index']);  
 Route::get('/articles/{id}', [ArticleController::class, 'show']);
 Route::resource('kendaraans', KendaraanController::class);
+
+Route::get('/home', function () {
+    return view('home'); 
+})->name('home');

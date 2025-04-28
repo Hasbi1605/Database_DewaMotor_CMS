@@ -27,7 +27,7 @@ class KendaraanController extends Controller
             'nomor_polisi' => 'required|string|max:255',  
             'merek' => 'required|string|max:255',  
             'model' => 'required|string|max:255',  
-            'tahun_pembutan' => 'required|integer',  
+            'tahun_pembuatan' => 'required|integer',  
             'harga_modal' => 'required|numeric',  
             'harga_jual' => 'required|numeric',  
         ]);  
@@ -64,7 +64,7 @@ class KendaraanController extends Controller
             'nomor_polisi' => 'required|string|max:255',  
             'merek' => 'required|string|max:255',  
             'model' => 'required|string|max:255',  
-            'tahun_pembutan' => 'required|integer',  
+            'tahun_pembuatan' => 'required|integer',  
             'harga_modal' => 'required|numeric',  
             'harga_jual' => 'required|numeric',  
         ]);  

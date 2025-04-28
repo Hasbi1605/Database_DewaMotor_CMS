@@ -19,7 +19,7 @@
             <div class="sidebar-wrapper">
                 <ul class="nav nav-secondary">
                     <li class="nav-item">
-                        <a href="{{ route('home') }}">
+                        <a href="{{ route('kendaraans.index') }}"> <!-- Ubah rute ke rute yang valid -->
                             <i class="fas fa-home"></i>
                             <p>Dashboard</p>
                         </a>

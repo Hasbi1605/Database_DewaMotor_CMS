@@ -15,7 +15,7 @@ class Kendaraan extends Model
         'nomor_polisi',   
         'merek',   
         'model',   
-        'tahun_pembuatan', // Pastikan nama kolom sesuai database  
+        'tahun_pembuatan',  
         'harga_modal',   
         'harga_jual',  
     ];  
