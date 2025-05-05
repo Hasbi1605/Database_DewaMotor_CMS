@@ -51,6 +51,9 @@
                         <td>Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</td>
                         <td>
                             <div class="btn-group">
+                                <a href="{{ route('kendaraans.show', $kendaraan->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-eye"></i>
+                                </a>
                                 <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
