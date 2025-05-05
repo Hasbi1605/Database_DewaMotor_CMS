@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kendaraans', function (Blueprint $table) {  
-            $table->id();  
-            $table->string('nomor_rangka');  
-            $table->string('nomor_mesin');  
-            $table->string('nomor_polisi');  
-            $table->string('merek');  
-            $table->string('model');  
-            $table->integer('tahun_pembutan');  
-            $table->decimal('harga_modal', 15, 2);  
-            $table->decimal('harga_jual', 15, 2);  
-            $table->timestamps();  
-        });  
+        Schema::create('kendaraans', function (Blueprint $table) {
+            $table->id();
+            $table->string('nomor_rangka');
+            $table->string('nomor_mesin');
+            $table->string('nomor_polisi');
+            $table->string('merek');
+            $table->string('model');
+            $table->integer('tahun_pembuatan');
+            $table->decimal('harga_modal', 15, 2);
+            $table->decimal('harga_jual', 15, 2);
+            $table->timestamps();
+        });
     }
 
     /**

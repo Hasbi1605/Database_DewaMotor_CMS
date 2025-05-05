@@ -1,48 +1,86 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Kendaraan')
-
 @section('content')
-    <h1>Edit Kendaraan</h1>
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center">
+            <h4 class="card-title mb-0">Edit Kendaraan</h4>
+            <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary btn-round ml-auto">
+                <i class="fa fa-arrow-left"></i>
+                Kembali
+            </a>
+        </div>
+    </div>
 
-    <form action="{{ route('kendaraans.update', $kendaraan->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+    <div class="card-body">
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
 
-        <label>Nomor Rangka:</label>
-        <input type="text" name="nomor_rangka" value="{{ $kendaraan->nomor_rangka }}" required>
-        <br>
+        <form action="{{ route('kendaraans.update', $kendaraan->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Nomor Rangka</label>
+                        <input type="text" name="nomor_rangka" class="form-control" value="{{ old('nomor_rangka', $kendaraan->nomor_rangka) }}" required>
+                    </div>
 
-        <label>Nomor Mesin:</label>
-        <input type="text" name="nomor_mesin" value="{{ $kendaraan->nomor_mesin }}" required>
-        <br>
+                    <div class="form-group">
+                        <label class="form-label">Nomor Mesin</label>
+                        <input type="text" name="nomor_mesin" class="form-control" value="{{ old('nomor_mesin', $kendaraan->nomor_mesin) }}" required>
+                    </div>
 
-        <label>Nomor Polisi:</label>
-        <input type="text" name="nomor_polisi" value="{{ $kendaraan->nomor_polisi }}" required>
-        <br>
+                    <div class="form-group">
+                        <label class="form-label">Nomor Polisi</label>
+                        <input type="text" name="nomor_polisi" class="form-control" value="{{ old('nomor_polisi', $kendaraan->nomor_polisi) }}" required>
+                    </div>
 
-        <label>Merek:</label>
-        <input type="text" name="merek" value="{{ $kendaraan->merek }}" required>
-        <br>
+                    <div class="form-group">
+                        <label class="form-label">Merek</label>
+                        <input type="text" name="merek" class="form-control" value="{{ old('merek', $kendaraan->merek) }}" required>
+                    </div>
+                </div>
 
-        <label>Model:</label>
-        <input type="text" name="model" value="{{ $kendaraan->model }}" required>
-        <br>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Model</label>
+                        <input type="text" name="model" class="form-control" value="{{ old('model', $kendaraan->model) }}" required>
+                    </div>
 
-        <label>Tahun Pembutan:</label>
-        <input type="number" name="tahun_pembutan" value="{{ $kendaraan->tahun_pembutan }}" required>
-        <br>
+                    <div class="form-group">
+                        <label class="form-label">Tahun Pembuatan</label>
+                        <input type="number" name="tahun_pembuatan" class="form-control" value="{{ old('tahun_pembuatan', $kendaraan->tahun_pembuatan) }}" required>
+                    </div>
 
-        <label>Harga Modal:</label>
-        <input type="number" name="harga_modal" value="{{ $kendaraan->harga_modal }}" required>
-        <br>
+                    <div class="form-group">
+                        <label class="form-label">Harga Modal</label>
+                        <input type="number" name="harga_modal" class="form-control" value="{{ old('harga_modal', $kendaraan->harga_modal) }}" required>
+                    </div>
 
-        <label>Harga Jual:</label>
-        <input type="number" name="harga_jual" value="{{ $kendaraan->harga_jual }}" required>
-        <br>
+                    <div class="form-group">
+                        <label class="form-label">Harga Jual</label>
+                        <input type="number" name="harga_jual" class="form-control" value="{{ old('harga_jual', $kendaraan->harga_jual) }}" required>
+                    </div>
+                </div>
+            </div>
 
-        <button type="submit">Simpan Perubahan</button>
-    </form>
-
-    <a href="{{ route('kendaraans.index') }}">Kembali</a>
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i>
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection

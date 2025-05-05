@@ -1,22 +1,24 @@
-<?php  
+<?php
 
-namespace App\Models;  
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;  
-use Illuminate\Database\Eloquent\Model;  
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Kendaraan extends Model  
-{  
-    use HasFactory;  
+class Kendaraan extends Model
+{
+    use HasFactory;
 
-    protected $fillable = [  
-        'nomor_rangka',   
-        'nomor_mesin',   
-        'nomor_polisi',   
-        'merek',   
-        'model',   
-        'tahun_pembuatan',  
-        'harga_modal',   
-        'harga_jual',  
-    ];  
+    protected $table = 'kendaraans';
+
+    protected $fillable = [
+        'nomor_rangka',
+        'nomor_mesin',
+        'nomor_polisi',
+        'merek',
+        'model',
+        'tahun_pembuatan',
+        'harga_modal',
+        'harga_jual',
+    ];
 }

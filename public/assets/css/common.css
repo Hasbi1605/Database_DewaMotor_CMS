@@ -1,0 +1,94 @@
+/* Common Styles */
+:root {
+    --primary-color: #1572e8;
+    --secondary-color: #6861ce;
+    --success-color: #31ce36;
+    --danger-color: #f25961;
+    --warning-color: #ffad46;
+    --info-color: #48abf7;
+    --body-bg: #f9fbfd;
+    --text-color: #575962;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    font-family: "Roboto", sans-serif;
+    line-height: 1.5;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 15px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 4px;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Table Styles */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
+
+/* Navigation Styles */
+.nav-link {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 15px;
+    }
+
+    .table-responsive {
+        margin-bottom: 0;
+    }
+}
