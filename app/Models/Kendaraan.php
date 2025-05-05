@@ -20,5 +20,25 @@ class Kendaraan extends Model
         'tahun_pembuatan',
         'harga_modal',
         'harga_jual',
+        'status'
     ];
+
+    public function getProfit()
+    {
+        return $this->harga_jual - $this->harga_modal;
+    }
+
+    public static function getTotalProfit()
+    {
+        return self::where('status', 'terjual')
+            ->get()
+            ->sum(function ($kendaraan) {
+                return $kendaraan->getProfit();
+            });
+    }
+
+    public static function getKendaraanTerjual()
+    {
+        return self::where('status', 'terjual')->get();
+    }
 }

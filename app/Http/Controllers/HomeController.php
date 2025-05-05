@@ -10,7 +10,10 @@ class HomeController extends Controller
     {
         $kendaraans = Kendaraan::all();
         $totalKendaraan = $kendaraans->count();
+        $kendaraanTerjual = Kendaraan::where('status', 'terjual')->get();
+        $totalTerjual = $kendaraanTerjual->count();
+        $totalProfit = Kendaraan::getTotalProfit();
 
-        return view('home', compact('kendaraans', 'totalKendaraan'));
+        return view('home', compact('kendaraans', 'totalKendaraan', 'totalTerjual', 'totalProfit', 'kendaraanTerjual'));
     }
 }

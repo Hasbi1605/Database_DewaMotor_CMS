@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ArticleController; 
-use App\Http\Controllers\KendaraanController;  
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +17,9 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index']);
 // Route untuk artikel
-Route::get('/articles', [ArticleController::class, 'index']);  
-Route::get('/articles/{id}', [ArticleController::class, 'show']);
 Route::resource('kendaraans', KendaraanController::class);
+Route::post('/kendaraans/{id}/update-status', [KendaraanController::class, 'updateStatus'])->name('kendaraans.updateStatus');
 
 Route::get('/home', function () {
-    return view('home'); 
+    return view('home');
 })->name('home');
