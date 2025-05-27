@@ -9,7 +9,7 @@ class KendaraanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Kendaraan::query();
+        $query = Kendaraan::with('dokumen')->latest();
 
         // Pencarian berdasarkan nomor rangka, mesin, atau polisi
         if ($request->filled('search')) {
@@ -44,7 +44,7 @@ class KendaraanController extends Controller
             $query->where('status', $request->status);
         }
 
-        $kendaraans = $query->get();
+        $kendaraans = $query->paginate(10);
         $totalProfit = Kendaraan::getTotalProfit();
         $totalTerjual = Kendaraan::where('status', 'terjual')->count();
 
@@ -79,11 +79,17 @@ class KendaraanController extends Controller
 
     public function show($id)
     {
-        $kendaraan = Kendaraan::find($id);
+        $kendaraan = Kendaraan::with('dokumen')->find($id);
         if (!$kendaraan) {
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
-        return view('kendaraans.show', compact('kendaraan'));
+
+        // Get document status
+        $requiredDocs = ['STNK', 'BPKB', 'Faktur'];
+        $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
+        $missingDocs = array_diff($requiredDocs, $existingDocs);
+
+        return view('kendaraans.show', compact('kendaraan', 'missingDocs', 'requiredDocs'));
     }
 
     public function edit($id)

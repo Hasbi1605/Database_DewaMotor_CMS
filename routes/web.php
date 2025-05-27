@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DokumenKendaraanController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,6 +20,7 @@ Route::get('/', [HomeController::class, 'index']);
 // Route untuk artikel
 Route::resource('kendaraans', KendaraanController::class);
 Route::post('/kendaraans/{id}/update-status', [KendaraanController::class, 'updateStatus'])->name('kendaraans.updateStatus');
+Route::resource('dokumen-kendaraans', DokumenKendaraanController::class);
 
 Route::get('/home', function () {
     return view('home');

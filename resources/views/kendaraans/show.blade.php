@@ -117,6 +117,93 @@
                 </div>
             </div>
         </div>
+
+        <!-- Dokumen Kendaraan -->
+        <div class="mt-6">
+            <div class="info-section">
+                <div class="info-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fa fa-file-alt"></i>
+                        <h2 class="d-inline-block">Dokumen Kendaraan</h2>
+                    </div>
+                    <a href="{{ route('dokumen-kendaraans.create', ['kendaraan_id' => $kendaraan->id]) }}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-plus me-2"></i>Tambah Dokumen
+                    </a>
+                </div>
+                <div class="table-responsive mt-3">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Jenis Dokumen</th>
+                                <th>Nomor</th>
+                                <th>Tanggal Terbit</th>
+                                <th>Tanggal Expired</th>
+                                <th>File</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $requiredDocs = ['STNK', 'BPKB', 'Faktur'];
+                                $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
+                                $missingDocs = array_diff($requiredDocs, $existingDocs);
+                            @endphp
+
+                            @forelse($kendaraan->dokumen as $dokumen)
+                            <tr>
+                                <td>{{ $dokumen->jenis_dokumen }}</td>
+                                <td>{{ $dokumen->nomor_dokumen }}</td>
+                                <td>{{ $dokumen->tanggal_terbit->format('d/m/Y') }}</td>
+                                <td>{{ $dokumen->tanggal_expired ? $dokumen->tanggal_expired->format('d/m/Y') : '-' }}</td>
+                                <td>
+                                    @if($dokumen->file_path)
+                                        <a href="{{ asset('storage/' . $dokumen->file_path) }}" target="_blank" class="btn btn-sm btn-info">
+                                            <i class="fa fa-file"></i>
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ route('dokumen-kendaraans.edit', $dokumen->id) }}" class="btn btn-sm btn-warning">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('dokumen-kendaraans.destroy', $dokumen->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Belum ada dokumen</td>
+                            </tr>
+                            @endforelse
+
+                            @foreach($missingDocs as $doc)
+                            <tr class="table-warning">
+                                <td>{{ $doc }}</td>
+                                <td colspan="5">
+                                    <span class="text-warning">
+                                        <i class="fa fa-exclamation-triangle me-2"></i>
+                                        Dokumen belum tersedia
+                                    </span>
+                                    <a href="{{ route('dokumen-kendaraans.create', ['kendaraan_id' => $kendaraan->id, 'jenis_dokumen' => $doc]) }}" class="btn btn-warning btn-sm ms-2">
+                                        <i class="fa fa-plus me-1"></i>Tambah
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

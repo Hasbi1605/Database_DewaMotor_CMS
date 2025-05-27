@@ -58,6 +58,35 @@
 </div>
 
 <div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Statistik Penjualan Berdasarkan Merek
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Perbandingan Status Kendaraan
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
     <div class="col-12">
         <div class="card" id="kendaraanTersedia">
             <div class="card-header">
@@ -165,4 +194,76 @@
     </div>
 </div>
 <link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/home.css') }}">
+
+@push('scripts')
+<script>
+window.addEventListener('load', function() {
+    // Data untuk diagram lingkaran penjualan per merek
+    const salesData = {!! json_encode($kendaraanTerjual->groupBy('merek')
+        ->map(function($items) {
+            return $items->count();
+        })) !!};
+    
+    // Pastikan ada data sebelum membuat chart
+    if (Object.keys(salesData).length > 0) {
+    
+        const salesChart = new Chart(document.getElementById('salesChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(salesData),
+                datasets: [{
+                    data: Object.values(salesData),
+                backgroundColor: [
+                    '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                    '#858796', '#5a5c69', '#2e59d9', '#17a673', '#2c9faf'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                title: {
+                    display: true,
+                    text: 'Penjualan per Merek'
+                }
+            }
+        }
+    });
+
+    }
+
+    // Data untuk diagram lingkaran status kendaraan
+    const statusData = {
+        'Tersedia': {{ $kendaraans->where('status', 'tersedia')->count() }},
+        'Terjual': {{ $kendaraanTerjual->count() }}
+    };
+
+    const statusChart = new Chart(document.getElementById('statusChart').getContext('2d'), {
+        type: 'pie',
+        data: {
+            labels: Object.keys(statusData),
+            datasets: [{
+                data: Object.values(statusData),
+                backgroundColor: ['#1cc88a', '#4e73df']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                title: {
+                    display: true,
+                    text: 'Status Kendaraan'
+                }
+            }
+        }
+    });
+});
+</script>
+@endpush
 @endsection

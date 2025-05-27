@@ -23,6 +23,11 @@ class Kendaraan extends Model
         'status'
     ];
 
+    public function dokumen()
+    {
+        return $this->hasMany(DokumenKendaraan::class);
+    }
+
     public function getProfit()
     {
         return $this->harga_jual - $this->harga_modal;

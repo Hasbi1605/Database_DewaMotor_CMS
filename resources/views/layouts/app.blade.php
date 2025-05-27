@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/kaiadmin.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/app.css') }}">
 
@@ -42,6 +42,12 @@
                             <p>Kelola Kendaraan</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('dokumen-kendaraans.index') }}" class="nav-link">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Dokumen Kendaraan</p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -54,8 +60,10 @@
         </div>
     </div>
 
-    <script src="assets/js/core/jquery-3.7.1.min.js"></script>
-    <script src="assets/js/core/bootstrap.min.js"></script>
-    <script src="assets/js/kaiadmin.js"></script>
+    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/js/kaiadmin.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
+    @stack('scripts')
 </body>
 </html>

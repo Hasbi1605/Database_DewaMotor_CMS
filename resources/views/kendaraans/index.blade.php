@@ -29,7 +29,7 @@
         <!-- Form Pencarian dan Filter -->
         <form action="{{ route('kendaraans.index') }}" method="GET" class="mb-4">
             <div class="row g-3">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="text" name="search" class="form-control" placeholder="Cari (No. Rangka/Mesin/Polisi)" value="{{ request('search') }}">
                 </div>
                 <div class="col-md-2">
@@ -88,13 +88,14 @@
                         <th>Harga Modal</th>
                         <th>Harga Jual</th>
                         <th>Status</th>
+                        <th>Dokumen</th>
                         <th style="width: 15%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($kendaraans as $index => $kendaraan)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $kendaraans->firstItem() + $index }}</td>
                         <td>{{ $kendaraan->nomor_rangka }}</td>
                         <td>{{ $kendaraan->nomor_mesin }}</td>
                         <td>{{ $kendaraan->nomor_polisi }}</td>
@@ -107,6 +108,24 @@
                             <span class="badge bg-{{ $kendaraan->status == 'tersedia' ? 'success' : 'secondary' }}">
                                 {{ ucfirst($kendaraan->status) }}
                             </span>
+                        </td>
+                        <td>
+                            @php
+                                $dokumenTypes = ['STNK', 'BPKB', 'Faktur'];
+                                $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
+                                $completeness = count(array_intersect($dokumenTypes, $existingDocs));
+                                $percentage = ($completeness / 3) * 100;
+                            @endphp
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar {{ $percentage == 100 ? 'bg-success' : 'bg-warning' }}" 
+                                     role="progressbar" 
+                                     style="width: {{ $percentage }}%"
+                                     aria-valuenow="{{ $percentage }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ $completeness }}/3
+                                </div>
+                            </div>
                         </td>
                         <td>
                             <div class="btn-group">
@@ -138,6 +157,14 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div class="mt-4 d-flex justify-content-between align-items-center">
+            <div class="text-muted">
+                Menampilkan {{ $kendaraans->firstItem() ?? 0 }} sampai {{ $kendaraans->lastItem() ?? 0 }} dari {{ $kendaraans->total() }} data
+            </div>
+            <div>
+                {{ $kendaraans->appends(request()->query())->links() }}
+            </div>
         </div>
     </div>
 </div>
