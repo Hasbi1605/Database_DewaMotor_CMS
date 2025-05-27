@@ -4,26 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dewa Motor')</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/kaiadmin.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        .sidebar .nav-secondary .nav-link {
-            color: rgba(255, 255, 255, 0.95) !important;
-        }
-        .sidebar .nav-secondary .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .sidebar .nav-secondary .nav-link i {
-            color: rgba(255, 255, 255, 0.95) !important;
-        }
-        .sidebar-divider {
-            border: none;
-            height: 2px;
-            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 100%);
-            margin: 0.5rem 1rem 1rem !important;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/app.css') }}">
+
+    @stack('styles')
 </head>
 <body>
     <div class="wrapper">

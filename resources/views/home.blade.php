@@ -164,13 +164,5 @@
         </div>
     </div>
 </div>
-
-<style>
-.hover-card {
-    transition: transform 0.2s ease-in-out;
-}
-.hover-card:hover {
-    transform: translateY(-5px);
-}
-</style>
+<link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/home.css') }}">
 @endsection

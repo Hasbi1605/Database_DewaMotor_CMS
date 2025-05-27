@@ -1,167 +1,126 @@
-@extends('layouts.app')
+@extends('layouts.app-tanpa-sidebar')
 
 @section('title', 'Detail Kendaraan')
 
 @section('content')
-<div class="card shadow">
-    <div class="card-header bg-white py-3">
-        <div class="d-flex align-items-center">
-            <h4 class="card-title mb-0">Detail Kendaraan</h4>
-            <div class="ms-auto">
-                <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-info btn-sm me-2">
+<div class="container-fluid p-4">
+    <div class="max-w-screen-xl mx-auto">
+        <!-- Header -->
+        <div class="mb-6 flex justify-between items-center">
+            <h1 class="text-2xl font-semibold text-gray-800">
+                Detail Kendaraan
+                <span class="badge-status status-{{ $kendaraan->status }}">{{ ucfirst($kendaraan->status) }}</span>
+            </h1>
+            <div class="flex gap-3">
+                <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn-edit">
                     <i class="fa fa-edit me-2"></i>
-                    Edit
+                    Edit Data
                 </a>
-                <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary btn-sm">
+                <a href="{{ route('kendaraans.index') }}" class="btn-back">
                     <i class="fa fa-arrow-left me-2"></i>
                     Kembali
                 </a>
             </div>
         </div>
-    </div>
 
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card bg-light border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title mb-4">
-                            <i class="fa fa-id-card me-2"></i>
-                            Informasi Identitas Kendaraan
-                        </h5>
-
-                        <table class="table table-borderless">
-                            <tr>
-                                <td class="text-muted fw-bold" width="40%">
-                                    <i class="fa fa-fingerprint text-primary me-2"></i>
-                                    Nomor Rangka
-                                </td>
-                                <td>{{ $kendaraan->nomor_rangka }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted fw-bold">
-                                    <i class="fa fa-cog text-primary me-2"></i>
-                                    Nomor Mesin
-                                </td>
-                                <td>{{ $kendaraan->nomor_mesin }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted fw-bold">
-                                    <i class="fa fa-car text-primary me-2"></i>
-                                    Nomor Polisi
-                                </td>
-                                <td>{{ $kendaraan->nomor_polisi }}</td>
-                            </tr>
-                        </table>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Informasi Identitas -->
+            <div class="lg:col-span-2">
+                <div class="info-section">
+                    <div class="info-header">
+                        <i class="fa fa-id-card"></i>
+                        <h2>Informasi Identitas Kendaraan</h2>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nomor Polisi</span>
+                            <span class="info-value">{{ $kendaraan->nomor_polisi ?: '-' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Nomor Rangka</span>
+                            <span class="info-value">{{ $kendaraan->nomor_rangka }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Nomor Mesin</span>
+                            <span class="info-value">{{ $kendaraan->nomor_mesin }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="card bg-light border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title mb-4">
-                            <i class="fa fa-info-circle me-2"></i>
-                            Detail Kendaraan
-                        </h5>
-
-                        <table class="table table-borderless">
-                            <tr>
-                                <td class="text-muted fw-bold" width="40%">
-                                    <i class="fa fa-trademark text-primary me-2"></i>
-                                    Merek
-                                </td>
-                                <td>{{ $kendaraan->merek }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted fw-bold">
-                                    <i class="fa fa-motorcycle text-primary me-2"></i>
-                                    Model
-                                </td>
-                                <td>{{ $kendaraan->model }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted fw-bold">
-                                    <i class="fa fa-calendar text-primary me-2"></i>
-                                    Tahun Pembuatan
-                                </td>
-                                <td>{{ $kendaraan->tahun_pembuatan }}</td>
-                            </tr>
-                        </table>
+                <div class="info-section mt-6">
+                    <div class="info-header">
+                        <i class="fa fa-info-circle"></i>
+                        <h2>Detail Kendaraan</h2>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-12 mt-4">
-                <div class="card bg-light border-0">
-                    <div class="card-body">
-                        <h5 class="card-title mb-4">
-                            <i class="fa fa-money-bill me-2"></i>
-                            Informasi Harga
-                        </h5>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card border-0 bg-white">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-                                                <i class="fa fa-tag text-primary"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="text-muted mb-1">Harga Modal</h6>
-                                                <h4 class="mb-0">Rp {{ number_format($kendaraan->harga_modal, 0, ',', '.') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card border-0 bg-white">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
-                                                <i class="fa fa-money-bill text-success"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="text-muted mb-1">Harga Jual</h6>
-                                                <h4 class="mb-0">Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Merek</span>
+                            <span class="info-value">{{ $kendaraan->merek }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Model</span>
+                            <span class="info-value">{{ $kendaraan->model }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tahun Pembuatan</span>
+                            <span class="info-value">{{ $kendaraan->tahun_pembuatan }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mt-4">
-            <form action="{{ route('kendaraans.destroy', $kendaraan->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kendaraan ini?')">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">
-                    <i class="fa fa-trash me-2"></i>
-                    Hapus Kendaraan
-                </button>
-            </form>
+            <!-- Informasi Harga -->
+            <div class="lg:col-span-1">
+                <div class="price-section">
+                    <div class="info-header">
+                        <i class="fa fa-money-bill"></i>
+                        <h2>Informasi Harga</h2>
+                    </div>
+                    <div class="price-details">
+                        <div class="price-item">
+                            <span class="price-label">Harga Modal</span>
+                            <span class="price-value">Rp {{ number_format($kendaraan->harga_modal, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="price-item">
+                            <span class="price-label">Harga Jual</span>
+                            <span class="price-value text-success">Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</span>
+                        </div>
+                        @if($kendaraan->status == 'terjual')
+                        <div class="price-item profit">
+                            <span class="price-label">Keuntungan</span>
+                            <span class="price-value text-primary">Rp {{ number_format($kendaraan->harga_jual - $kendaraan->harga_modal, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                @if(isset($kendaraan->catatan) && $kendaraan->catatan)
+                <div class="notes-section mt-6">
+                    <div class="info-header">
+                        <i class="fa fa-sticky-note"></i>
+                        <h2>Catatan</h2>
+                    </div>
+                    <p class="notes-content">{{ $kendaraan->catatan }}</p>
+                </div>
+                @endif
+
+                <div class="delete-section mt-6">
+                    <form action="{{ route('kendaraans.destroy', $kendaraan->id) }}" method="POST" 
+                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus kendaraan ini? Operasi ini tidak dapat dibatalkan.')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-delete">
+                            <i class="fa fa-trash-alt me-2"></i>
+                            Hapus Kendaraan
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @push('styles')
-<style>
-.card {
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-.table td {
-    padding: 0.75rem 0;
-}
-.card-header {
-    border-bottom: 1px solid rgba(0,0,0,.125);
-}
-</style>
+<link rel="stylesheet" href="{{ asset('assets/css/pages/kendaraans/show.css') }}">
 @endpush
 @endsection

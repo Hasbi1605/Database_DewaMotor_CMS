@@ -1,163 +1,143 @@
-@extends('layouts.app')
+@extends('layouts.app-tanpa-sidebar')
 
 @section('title', 'Edit Kendaraan')
 
 @section('content')
-<div class="card shadow">
-    <div class="card-header bg-white py-3">
-        <div class="d-flex align-items-center">
-            <h4 class="card-title mb-0">Edit Kendaraan</h4>
-            <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary btn-sm ms-auto">
+<div class="container-fluid p-4">
+    <div class="max-w-screen-xl mx-auto">
+        <!-- Header -->
+        <div class="mb-6 flex justify-between items-center">
+            <h1 class="text-2xl font-semibold text-gray-800">
+                Edit Kendaraan
+                <span class="badge-status status-{{ $kendaraan->status }}">{{ ucfirst($kendaraan->status) }}</span>
+            </h1>
+            <a href="{{ route('kendaraans.index') }}" class="btn-back">
                 <i class="fa fa-arrow-left me-2"></i>
                 Kembali
             </a>
         </div>
-    </div>
 
-    <div class="card-body">
         @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                <div class="d-flex">
-                    <i class="fa fa-exclamation-triangle me-2"></i>
+            <div class="alert-error mb-6">
+                <div class="flex items-center">
+                    <i class="fa fa-exclamation-circle text-xl me-3"></i>
                     <div>
-                        <strong>Terjadi kesalahan!</strong>
-                        <ul class="mb-0 mt-2">
+                        <p class="font-medium">Mohon periksa kembali data yang diinput:</p>
+                        <ul class="mt-2 list-disc list-inside text-sm">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert">
+                    <i class="fa fa-times"></i>
+                </button>
             </div>
         @endif
 
-        <form action="{{ route('kendaraans.update', $kendaraan->id) }}" method="POST">
+        <form action="{{ route('kendaraans.update', $kendaraan->id) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card bg-light border-0 h-100">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4">
-                                <i class="fa fa-id-card me-2"></i>
-                                Informasi Identitas Kendaraan
-                            </h5>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Informasi Identitas -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <i class="fa fa-id-card text-primary"></i>
+                        <h2>Informasi Identitas Kendaraan</h2>
+                    </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Nomor Rangka</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">
-                                        <i class="fa fa-fingerprint text-primary"></i>
-                                    </span>
-                                    <input type="text" name="nomor_rangka" class="form-control" value="{{ old('nomor_rangka', $kendaraan->nomor_rangka) }}" required>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label for="nomor_rangka">Nomor Rangka</label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-fingerprint"></i>
+                            <input type="text" id="nomor_rangka" name="nomor_rangka" value="{{ old('nomor_rangka', $kendaraan->nomor_rangka) }}" required>
+                        </div>
+                    </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Nomor Mesin</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">
-                                        <i class="fa fa-cog text-primary"></i>
-                                    </span>
-                                    <input type="text" name="nomor_mesin" class="form-control" value="{{ old('nomor_mesin', $kendaraan->nomor_mesin) }}" required>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label for="nomor_mesin">Nomor Mesin</label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-cog"></i>
+                            <input type="text" id="nomor_mesin" name="nomor_mesin" value="{{ old('nomor_mesin', $kendaraan->nomor_mesin) }}" required>
+                        </div>
+                    </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Nomor Polisi</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">
-                                        <i class="fa fa-car text-primary"></i>
-                                    </span>
-                                    <input type="text" name="nomor_polisi" class="form-control" value="{{ old('nomor_polisi', $kendaraan->nomor_polisi) }}" required>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label for="nomor_polisi">Nomor Polisi</label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-car"></i>
+                            <input type="text" id="nomor_polisi" name="nomor_polisi" value="{{ old('nomor_polisi', $kendaraan->nomor_polisi) }}" required>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <div class="card bg-light border-0 h-100">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4">
-                                <i class="fa fa-info-circle me-2"></i>
-                                Detail Kendaraan
-                            </h5>
+                <!-- Detail Kendaraan -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <i class="fa fa-info-circle text-primary"></i>
+                        <h2>Detail Kendaraan</h2>
+                    </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Merek</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">
-                                        <i class="fa fa-trademark text-primary"></i>
-                                    </span>
-                                    <input type="text" name="merek" class="form-control" value="{{ old('merek', $kendaraan->merek) }}" required>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Model</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">
-                                        <i class="fa fa-motorcycle text-primary"></i>
-                                    </span>
-                                    <input type="text" name="model" class="form-control" value="{{ old('model', $kendaraan->model) }}" required>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Tahun Pembuatan</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white">
-                                        <i class="fa fa-calendar text-primary"></i>
-                                    </span>
-                                    <input type="number" name="tahun_pembuatan" class="form-control" value="{{ old('tahun_pembuatan', $kendaraan->tahun_pembuatan) }}" required>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label for="merek">Merek</label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-trademark"></i>
+                            <input type="text" id="merek" name="merek" value="{{ old('merek', $kendaraan->merek) }}" required>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-12 mt-4">
-                    <div class="card bg-light border-0">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4">
-                                <i class="fa fa-money-bill me-2"></i>
-                                Informasi Harga
-                            </h5>
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-motorcycle"></i>
+                            <input type="text" id="model" name="model" value="{{ old('model', $kendaraan->model) }}" required>
+                        </div>
+                    </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Harga Modal</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-white">Rp</span>
-                                            <input type="number" name="harga_modal" class="form-control" value="{{ old('harga_modal', $kendaraan->harga_modal) }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Harga Jual</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-white">Rp</span>
-                                            <input type="number" name="harga_jual" class="form-control" value="{{ old('harga_jual', $kendaraan->harga_jual) }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label for="tahun_pembuatan">Tahun Pembuatan</label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-calendar"></i>
+                            <input type="number" id="tahun_pembuatan" name="tahun_pembuatan" value="{{ old('tahun_pembuatan', $kendaraan->tahun_pembuatan) }}" required>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end gap-2 mt-4">
-                <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary">
+            <!-- Informasi Harga -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <i class="fa fa-money-bill text-primary"></i>
+                    <h2>Informasi Harga</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="harga_modal">Harga Modal</label>
+                        <div class="input-wrapper">
+                            <span class="currency">Rp</span>
+                            <input type="number" id="harga_modal" name="harga_modal" value="{{ old('harga_modal', $kendaraan->harga_modal) }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="harga_jual">Harga Jual</label>
+                        <div class="input-wrapper">
+                            <span class="currency">Rp</span>
+                            <input type="number" id="harga_jual" name="harga_jual" value="{{ old('harga_jual', $kendaraan->harga_jual) }}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4">
+                <a href="{{ route('kendaraans.index') }}" class="btn-secondary">
                     <i class="fa fa-times me-2"></i>
                     Batal
                 </a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn-primary">
                     <i class="fa fa-save me-2"></i>
                     Simpan Perubahan
                 </button>
@@ -167,31 +147,6 @@
 </div>
 
 @push('styles')
-<style>
-.card {
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-.input-group-text {
-    border-right: 0;
-}
-.input-group .form-control {
-    border-left: 0;
-}
-.input-group:focus-within {
-    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
-    border-radius: 0.375rem;
-}
-.input-group:focus-within .input-group-text,
-.input-group:focus-within .form-control {
-    border-color: #86b7fe;
-}
-.form-control:focus {
-    box-shadow: none;
-}
-.card-header {
-    border-bottom: 1px solid rgba(0,0,0,.125);
-}
-</style>
+<link rel="stylesheet" href="{{ asset('assets/css/pages/kendaraans/edit.css') }}">
 @endpush
 @endsection
