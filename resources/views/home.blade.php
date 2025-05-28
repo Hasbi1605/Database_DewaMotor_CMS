@@ -96,6 +96,52 @@
                 </h5>
             </div>
             <div class="card-body">
+                <div class="mb-3">
+                    <form action="{{ route('home') }}" method="GET" class="row g-3 align-items-center">
+                        <div class="col-md-4">
+                            <label for="category" class="form-label">Filter by Category:</label>
+                            <select name="category" id="category" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                
+                                <!-- Merek -->
+                                <optgroup label="Merek">
+                                    @foreach($categories->where('type', 'brand') as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+
+                                <!-- Kelas -->
+                                <optgroup label="Kelas">
+                                    @foreach($categories->where('type', 'class') as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+
+                                <!-- Kelengkapan Dokumen -->
+                                <optgroup label="Kelengkapan Dokumen">
+                                    @foreach($categories->where('type', 'document') as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+
+                                <!-- Kondisi Motor -->
+                                <optgroup label="Kondisi Motor">
+                                    @foreach($categories->where('type', 'condition') as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                        </div>
+                    </form>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -128,13 +174,13 @@
                                         <a href="{{ route('kendaraans.show', $kendaraan->id) }}" class="btn btn-sm btn-primary">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline">
+                                        {{-- <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             <input type="hidden" name="status" value="terjual">
                                             <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Apakah Anda yakin ingin menandai kendaraan ini sebagai terjual?')">
                                                 <i class="fa fa-check"></i>
                                             </button>
-                                        </form>
+                                        </form> --}}
                                     </div>
                                 </td>
                             </tr>

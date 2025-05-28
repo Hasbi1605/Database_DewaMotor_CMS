@@ -5,6 +5,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DokumenKendaraanController;
+use App\Http\Controllers\CategoryController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,7 +22,6 @@ Route::get('/', [HomeController::class, 'index']);
 Route::resource('kendaraans', KendaraanController::class);
 Route::post('/kendaraans/{id}/update-status', [KendaraanController::class, 'updateStatus'])->name('kendaraans.updateStatus');
 Route::resource('dokumen-kendaraans', DokumenKendaraanController::class);
+Route::resource('categories', CategoryController::class);
 
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');

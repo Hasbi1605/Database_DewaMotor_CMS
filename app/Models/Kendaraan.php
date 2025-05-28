@@ -28,6 +28,11 @@ class Kendaraan extends Model
         return $this->hasMany(DokumenKendaraan::class);
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'kendaraan_category');
+    }
+
     public function getProfit()
     {
         return $this->harga_jual - $this->harga_modal;

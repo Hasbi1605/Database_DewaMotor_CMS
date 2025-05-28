@@ -50,6 +50,12 @@
                             <p>Dokumen Kendaraan</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('categories.index') }}" class="nav-link">
+                            <i class="fas fa-tags"></i>
+                            <p>Kelola Kategori</p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

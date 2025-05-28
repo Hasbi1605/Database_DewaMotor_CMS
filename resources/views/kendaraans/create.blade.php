@@ -99,6 +99,87 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Kategori Kendaraan -->
+                <div class="col-12">
+                    <h5 class="mb-3">Kategori Kendaraan</h5>
+                    
+                    <!-- Kelas Kendaraan -->
+                    <div class="mb-3">
+                        <label class="form-label">Kelas Kendaraan</label>
+                        <div class="row">
+                            @foreach($categories['class'] ?? [] as $category)
+                            <div class="col-md-4">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="categories[]" 
+                                        value="{{ $category->id }}" id="category{{ $category->id }}"
+                                        {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="category{{ $category->id }}">
+                                        {{ $category->name }}
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Merek -->
+                    <div class="mb-3">
+                        <label class="form-label">Merek</label>
+                        <div class="row">
+                            @foreach($categories['brand'] ?? [] as $category)
+                            <div class="col-md-4">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="categories[]" 
+                                        value="{{ $category->id }}" id="category{{ $category->id }}"
+                                        {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="category{{ $category->id }}">
+                                        {{ $category->name }}
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Kelengkapan Dokumen -->
+                    <div class="mb-3">
+                        <label class="form-label">Kelengkapan Dokumen</label>
+                        <div class="row">
+                            @foreach($categories['document'] ?? [] as $category)
+                            <div class="col-md-4">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="categories[]" 
+                                        value="{{ $category->id }}" id="category{{ $category->id }}"
+                                        {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="category{{ $category->id }}">
+                                        {{ $category->name }}
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Kondisi Kendaraan -->
+                    <div class="mb-3">
+                        <label class="form-label">Kondisi Kendaraan</label>
+                        <div class="row">
+                            @foreach($categories['condition'] ?? [] as $category)
+                            <div class="col-md-4">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="categories[]" 
+                                        value="{{ $category->id }}" id="category{{ $category->id }}"
+                                        {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="category{{ $category->id }}">
+                                        {{ $category->name }}
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="text-end mt-3">

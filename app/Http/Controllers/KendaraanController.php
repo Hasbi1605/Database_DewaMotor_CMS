@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class KendaraanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Kendaraan::with('dokumen')->latest();
+        $query = Kendaraan::with(['dokumen', 'categories'])->latest();
 
         // Pencarian berdasarkan nomor rangka, mesin, atau polisi
         if ($request->filled('search')) {
@@ -18,6 +19,13 @@ class KendaraanController extends Controller
                 $q->where('nomor_rangka', 'like', "%{$search}%")
                     ->orWhere('nomor_mesin', 'like', "%{$search}%")
                     ->orWhere('nomor_polisi', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter berdasarkan kategori
+        if ($request->filled('category')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('categories.id', $request->category);
             });
         }
 
@@ -47,13 +55,15 @@ class KendaraanController extends Controller
         $kendaraans = $query->paginate(10);
         $totalProfit = Kendaraan::getTotalProfit();
         $totalTerjual = Kendaraan::where('status', 'terjual')->count();
+        $categories = Category::all();
 
-        return view('kendaraans.index', compact('kendaraans', 'totalProfit', 'totalTerjual'));
+        return view('kendaraans.index', compact('kendaraans', 'totalProfit', 'totalTerjual', 'categories'));
     }
 
     public function create()
     {
-        return view('kendaraans.create');
+        $categories = Category::all()->groupBy('type');
+        return view('kendaraans.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -68,10 +78,16 @@ class KendaraanController extends Controller
             'tahun_pembuatan' => 'required|integer',
             'harga_modal' => 'required|numeric',
             'harga_jual' => 'required|numeric',
+            'categories' => 'array',
         ]);
 
         // Simpan data kendaraan ke database  
-        Kendaraan::create($validatedData);
+        $kendaraan = Kendaraan::create($validatedData);
+
+        // Attach categories if provided
+        if ($request->has('categories')) {
+            $kendaraan->categories()->attach($request->categories);
+        }
 
         // Redirect ke halaman daftar dengan pesan sukses  
         return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil ditambahkan.');
@@ -79,7 +95,7 @@ class KendaraanController extends Controller
 
     public function show($id)
     {
-        $kendaraan = Kendaraan::with('dokumen')->find($id);
+        $kendaraan = Kendaraan::with(['dokumen', 'categories'])->find($id);
         if (!$kendaraan) {
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
@@ -94,11 +110,12 @@ class KendaraanController extends Controller
 
     public function edit($id)
     {
-        $kendaraan = Kendaraan::find($id);
+        $kendaraan = Kendaraan::with('categories')->find($id);
         if (!$kendaraan) {
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
-        return view('kendaraans.edit', compact('kendaraan'));
+        $categories = Category::all()->groupBy('type');
+        return view('kendaraans.edit', compact('kendaraan', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -112,6 +129,7 @@ class KendaraanController extends Controller
             'tahun_pembuatan' => 'required|integer',
             'harga_modal' => 'required|numeric',
             'harga_jual' => 'required|numeric',
+            'categories' => 'array',
         ]);
 
         $kendaraan = Kendaraan::find($id);
@@ -120,6 +138,13 @@ class KendaraanController extends Controller
         }
 
         $kendaraan->update($validatedData);
+
+        // Sync categories
+        if ($request->has('categories')) {
+            $kendaraan->categories()->sync($request->categories);
+        } else {
+            $kendaraan->categories()->detach();
+        }
 
         return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil diperbarui.');
     }

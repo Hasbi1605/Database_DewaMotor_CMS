@@ -8,7 +8,7 @@
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">
                 Detail Kendaraan
-                <span class="badge bg-{{ $kendaraan->status === 'aktif' ? 'success' : 'secondary' }}">
+                <span class="badge bg-{{ $kendaraan->status === 'tersedia' ? 'success' : 'secondary' }}">
                     {{ ucfirst($kendaraan->status) }}
                 </span>
             </h4>
@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- Detail Kendaraan -->
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
                             <i class="fa fa-info-circle me-2"></i>
@@ -74,6 +74,65 @@
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Tahun Pembuatan</label>
                                 <p>{{ $kendaraan->tahun_pembuatan }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori -->
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fa fa-tags me-2"></i>
+                            Kategori Kendaraan
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @php
+                            $categoriesByType = $kendaraan->categories->groupBy('type');
+                        @endphp
+
+                        <div class="row">
+                            <!-- Kelas Kendaraan -->
+                            <div class="col-md-6 mb-3">
+                                <h6 class="mb-2">Kelas Kendaraan:</h6>
+                                @forelse($categoriesByType['class'] ?? [] as $category)
+                                    <span class="badge bg-primary me-2">{{ $category->name }}</span>
+                                @empty
+                                    <span class="text-muted">-</span>
+                                @endforelse
+                            </div>
+
+                            <!-- Merek -->
+                            <div class="col-md-6 mb-3">
+                                <h6 class="mb-2">Merek:</h6>
+                                @forelse($categoriesByType['brand'] ?? [] as $category)
+                                    <span class="badge bg-info me-2">{{ $category->name }}</span>
+                                @empty
+                                    <span class="text-muted">-</span>
+                                @endforelse
+                            </div>
+
+                            <!-- Kelengkapan Dokumen -->
+                            <div class="col-md-6 mb-3">
+                                <h6 class="mb-2">Kelengkapan Dokumen:</h6>
+                                @forelse($categoriesByType['document'] ?? [] as $category)
+                                    <span class="badge bg-warning me-2">{{ $category->name }}</span>
+                                @empty
+                                    <span class="text-muted">-</span>
+                                @endforelse
+                            </div>
+
+                            <!-- Kondisi -->
+                            <div class="col-md-6 mb-3">
+                                <h6 class="mb-2">Kondisi Kendaraan:</h6>
+                                @forelse($categoriesByType['condition'] ?? [] as $category)
+                                    <span class="badge bg-{{ $category->name === 'Mulus' ? 'success' : ($category->name === 'Normal' ? 'info' : 'danger') }} me-2">
+                                        {{ $category->name }}
+                                    </span>
+                                @empty
+                                    <span class="text-muted">-</span>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -124,23 +183,18 @@
                                             <div>
                                                 <h6 class="mb-1">{{ $dokumen->jenis_dokumen }}</h6>
                                                 <small class="text-muted">
-                                                    <i class="fa fa-calendar me-1"></i>
-                                                    Berlaku: {{ \Carbon\Carbon::parse($dokumen->tanggal_berlaku)->format('d/m/Y') }}
+                                                    No: {{ $dokumen->nomor_dokumen }}
                                                 </small>
                                             </div>
-                                            @if($dokumen->file_path)
-                                                <a href="{{ Storage::url($dokumen->file_path) }}" 
-                                                   class="btn btn-sm btn-outline-primary"
-                                                   target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            @endif
+                                            <span class="badge bg-{{ $dokumen->tanggal_expired && $dokumen->tanggal_expired->isPast() ? 'danger' : 'success' }}">
+                                                {{ $dokumen->tanggal_expired ? $dokumen->tanggal_expired->format('d/m/Y') : 'Tidak ada expired' }}
+                                            </span>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-muted mb-0">Tidak ada dokumen yang tersedia.</p>
+                            <p class="text-muted mb-0">Belum ada dokumen terkait</p>
                         @endif
                     </div>
                 </div>

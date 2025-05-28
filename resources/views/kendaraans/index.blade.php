@@ -33,6 +33,20 @@
                     <input type="text" name="search" class="form-control" placeholder="Cari (No. Rangka/Mesin/Polisi)" value="{{ request('search') }}">
                 </div>
                 <div class="col-md-2">
+                    <select name="category" class="form-select">
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories->groupBy('type') as $type => $typeCategories)
+                            <optgroup label="{{ ucfirst($type) }}">
+                                @foreach($typeCategories as $category)
+                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
                     <select name="merek" class="form-select">
                         <option value="">Semua Merek</option>
                         @foreach($kendaraans->unique('merek') as $k)
@@ -50,19 +64,12 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <div class="input-group">
-                        <span class="input-group-text">Harga</span>
-                        <input type="number" name="harga_min" class="form-control" placeholder="Min" value="{{ request('harga_min') }}">
-                        <input type="number" name="harga_max" class="form-control" placeholder="Max" value="{{ request('harga_max') }}">
-                    </div>
+                    <input type="text" name="tahun" class="form-control" placeholder="Tahun Pembuatan" value="{{ request('tahun') }}">
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-search"></i> Cari
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa fa-search"></i>
                     </button>
-                    <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary">
-                        <i class="fa fa-refresh"></i> Reset
-                    </a>
                 </div>
             </div>
         </form>
@@ -85,6 +92,7 @@
                         <th>Merek</th>
                         <th>Model</th>
                         <th>Tahun</th>
+                        <th>Kategori</th>
                         <th>Harga Modal</th>
                         <th>Harga Jual</th>
                         <th>Status</th>
@@ -93,15 +101,27 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($kendaraans as $index => $kendaraan)
+                    @foreach($kendaraans as $kendaraan)
                     <tr>
-                        <td>{{ $kendaraans->firstItem() + $index }}</td>
+                        <td>{{ $kendaraans->firstItem() + $loop->index }}</td>
                         <td>{{ $kendaraan->nomor_rangka }}</td>
                         <td>{{ $kendaraan->nomor_mesin }}</td>
                         <td>{{ $kendaraan->nomor_polisi }}</td>
                         <td>{{ $kendaraan->merek }}</td>
                         <td>{{ $kendaraan->model }}</td>
                         <td>{{ $kendaraan->tahun_pembuatan }}</td>
+                        <td>
+                            @foreach($kendaraan->categories as $category)
+                                <span class="badge bg-{{ 
+                                    $category->type === 'class' ? 'primary' : 
+                                    ($category->type === 'brand' ? 'info' : 
+                                    ($category->type === 'document' ? 'warning' : 
+                                    ($category->type === 'condition' ? 'success' : 'secondary')))
+                                }} me-1">
+                                    {{ $category->name }}
+                                </span>
+                            @endforeach
+                        </td>
                         <td>Rp {{ number_format($kendaraan->harga_modal, 0, ',', '.') }}</td>
                         <td>Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</td>
                         <td>
@@ -111,24 +131,15 @@
                         </td>
                         <td>
                             @php
-                                $dokumenTypes = ['STNK', 'BPKB', 'Faktur'];
-                                $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
-                                $completeness = count(array_intersect($dokumenTypes, $existingDocs));
-                                $percentage = ($completeness / 3) * 100;
+                                $totalDocs = $kendaraan->dokumen->count();
+                                $badge = $totalDocs === 0 ? 'danger' : ($totalDocs < 3 ? 'warning' : 'success');
                             @endphp
-                            <div class="progress" style="height: 20px;">
-                                <div class="progress-bar {{ $percentage == 100 ? 'bg-success' : 'bg-warning' }}" 
-                                     role="progressbar" 
-                                     style="width: {{ $percentage }}%"
-                                     aria-valuenow="{{ $percentage }}" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100">
-                                    {{ $completeness }}/3
-                                </div>
-                            </div>
+                            <span class="badge bg-{{ $badge }}">
+                                {{ $totalDocs }}/3
+                            </span>
                         </td>
                         <td>
-                            <div class="btn-group">
+                            <div class="btn-group" role="group">
                                 <a href="{{ route('kendaraans.show', $kendaraan->id) }}" class="btn btn-sm btn-primary">
                                     <i class="fa fa-eye"></i>
                                 </a>
