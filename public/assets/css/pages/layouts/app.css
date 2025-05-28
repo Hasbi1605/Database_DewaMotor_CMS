@@ -1,15 +1,50 @@
 body {
     font-family: "Figtree", sans-serif;
 }
+
+.sidebar {
+    width: 70px;
+    position: fixed;
+    height: 100%;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar:hover {
+    width: 250px;
+}
+
+.main-panel {
+    padding-left: 20px;
+    transition: all 0.3s ease;
+    margin-left: 70px;
+    width: calc(100% - 70px);
+}
+
+.sidebar:hover + .main-panel {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
+
 .sidebar .nav-secondary .nav-link {
     color: rgba(255, 255, 255, 0.95) !important;
+    white-space: nowrap;
+    padding: 12px;
 }
+
 .sidebar .nav-secondary .nav-link:hover {
     background: rgba(255, 255, 255, 0.1);
 }
+
 .sidebar .nav-secondary .nav-link i {
     color: rgba(255, 255, 255, 0.95) !important;
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
 }
+
 .sidebar-divider {
     border: none;
     height: 2px;
@@ -21,7 +56,59 @@ body {
     );
     margin: 0.5rem 1rem 1rem !important;
 }
-.main-panel {
-    padding-left: 20px;
+
+.sidebar .sidebar-header {
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 1rem;
 }
 
+.sidebar .sidebar-header .header-text h1,
+.sidebar .sidebar-header .header-text small {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .sidebar-header .header-text h1,
+.sidebar:hover .sidebar-header .header-text small {
+    opacity: 1;
+}
+
+.sidebar .header-text .fa-motorcycle {
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+}
+
+.sidebar:not(:hover) .header-text {
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar:not(:hover) .header-text .d-flex {
+    justify-content: center !important;
+}
+
+.sidebar:not(:hover) .header-text h1,
+.sidebar:not(:hover) .header-text small {
+    display: none;
+}
+
+.sidebar:not(:hover) .header-text .fa-motorcycle {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+/* Override menu item styles when sidebar is not hovered */
+.sidebar:not(:hover) .nav-secondary .nav-link {
+    padding: 12px;
+    text-align: center;
+}
+
+.sidebar:not(:hover) .nav-secondary .nav-link p {
+    display: none;
+}
+
+.sidebar:not(:hover) .nav-secondary .nav-link i {
+    margin: 0;
+    font-size: 1.2em;
+}

@@ -20,12 +20,14 @@
         <!-- Sidebar -->
         <div class="sidebar" data-background-color="dark">
             <div class="sidebar-wrapper">
-                <div class="sidebar-header text-center p-3">
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <i class="fas fa-motorcycle fa-2x me-2" style="color: rgba(255, 255, 255, 0.95);"></i>
-                        <h1 style="color: rgba(255, 255, 255, 0.95); font-size: 24px; font-weight: bold; margin: 0;">Dewa Motor</h1>
+                <div class="sidebar-header text-center">
+                    <div class="header-text">
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <i class="fas fa-motorcycle fa-2x me-2" style="color: rgba(255, 255, 255, 0.95);"></i>
+                            <h1 style="color: rgba(255, 255, 255, 0.95); font-size: 24px; font-weight: bold; margin: 0;">Dewa Motor</h1>
+                        </div>
+                        <small style="color: rgba(255, 255, 255, 0.7); font-size: 12px;">database management</small>
                     </div>
-                    <small style="color: rgba(255, 255, 255, 0.7); font-size: 12px;">database management</small>
                 </div>
                 <!-- Divider -->
                 <hr class="sidebar-divider">
@@ -54,7 +56,7 @@
 
         <!-- Main Panel -->
         <div class="main-panel">
-            <div class="container py-4">
+            <div class="container-fluid py-4">
                 @yield('content')
             </div>
         </div>
