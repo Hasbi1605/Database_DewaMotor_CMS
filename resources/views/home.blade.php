@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-4">
-        <a href="#kendaraanTersedia" class="text-decoration-none">
+    <div class="col-md-3">
+        <a href="" class="text-decoration-none">
             <div class="card bg-primary text-white hover-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
@@ -21,13 +21,30 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4">
-        <a href="#kendaraanTerjual" class="text-decoration-none">
+    <div class="col-md-3">
+        <a href="#kendaraanTersedia" class="text-decoration-none">
             <div class="card bg-success text-white hover-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="rounded-circle bg-white bg-opacity-25 p-3">
                             <i class="fas fa-check fa-2x"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-1">Kendaraan Tersedia</h6>
+                            <h3 class="mb-0">{{ $kendaraans->where('status', 'tersedia')->count() }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="#kendaraanTerjual" class="text-decoration-none">
+            <div class="card bg-danger text-white hover-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                            <i class="fas fa-times fa-2x "></i>
                         </div>
                         <div class="ms-3">
                             <h6 class="mb-1">Kendaraan Terjual</h6>
@@ -38,7 +55,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a href="#kendaraanTerjual" class="text-decoration-none">
             <div class="card bg-info text-white hover-card">
                 <div class="card-body">

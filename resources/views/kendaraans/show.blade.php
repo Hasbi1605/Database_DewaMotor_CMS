@@ -13,7 +13,7 @@
                 </span>
             </h4>
             <div class="ms-auto">
-                <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-warning btn-sm me-2">
+                <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-sm btn-info">
                     <i class="fa fa-edit"></i>
                     Edit Data
                 </a>
@@ -186,9 +186,17 @@
                                                     No: {{ $dokumen->nomor_dokumen }}
                                                 </small>
                                             </div>
-                                            <span class="badge bg-{{ $dokumen->tanggal_expired && $dokumen->tanggal_expired->isPast() ? 'danger' : 'success' }}">
-                                                {{ $dokumen->tanggal_expired ? $dokumen->tanggal_expired->format('d/m/Y') : 'Tidak ada expired' }}
-                                            </span>
+                                            <div class="text-end d-flex align-items-center">
+                                                <span class="badge bg-{{ $dokumen->tanggal_expired && $dokumen->tanggal_expired->isPast() ? 'danger' : 'success' }} me-2">
+                                                    {{ $dokumen->tanggal_expired ? $dokumen->tanggal_expired->format('d/m/Y') : 'Tidak ada expired' }}
+                                                </span>
+                                                {{-- Tombol untuk melihat file dokumen --}}
+                                                @if(isset($dokumen->file_path) && $dokumen->file_path)
+                                                    <a href="{{ asset('storage/' . $dokumen->file_path) }}" target="_blank" class="btn btn-sm btn-info mt-1" title="Lihat File">
+                                                        <i class="fa fa-file me-1"></i>Lihat
+                                                    </a>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
