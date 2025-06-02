@@ -19,8 +19,11 @@ class HomeController extends Controller
             });
         }
 
+        // Mengurutkan kendaraan berdasarkan ID dari terbesar ke terkecil
+        $query->orderBy('id', 'desc');
+
         $kendaraans = $query->get();
-        $totalKendaraan = Kendaraan::count(); // Get total of all vehicles regardless of filter
+        $totalKendaraan = Kendaraan::count(); // mengambil total kendaraan
         $kendaraanTerjual = Kendaraan::where('status', 'terjual')->get();
         $totalTerjual = $kendaraanTerjual->count();
         $totalProfit = Kendaraan::getTotalProfit();

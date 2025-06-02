@@ -9,15 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class DokumenKendaraanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(Request $request)
     {
-        // Get all kendaraans for the filter dropdown
         $kendaraans = Kendaraan::all();
 
-        // Start with kendaraans that have documents
+    
         $kendaraanQuery = Kendaraan::with(['dokumen' => function ($query) use ($request) {
             if ($request->has('search')) {
                 $query->where('nomor_dokumen', 'like', "%{$request->search}%");
