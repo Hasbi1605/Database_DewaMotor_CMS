@@ -14,9 +14,9 @@ class CategorySeeder extends Seeder
     {
         // Kelas Kendaraan
         $vehicleClasses = [
-            ['name' => 'Motor', 'type' => 'class', 'description' => 'Kendaraan roda dua'],
-            ['name' => 'Mobil', 'type' => 'class', 'description' => 'Kendaraan roda empat'],
-            ['name' => 'Truk', 'type' => 'class', 'description' => 'Kendaraan angkutan berat'],
+            ['name' => 'Kelas Atas', 'type' => 'class', 'description' => 'Range Harga 60 Juta ke Atas'],
+            ['name' => 'Kelas Menengah', 'type' => 'class', 'description' => 'Range Harga 30 Juta - 60 Juta'],
+            ['name' => 'Kelas Bawah', 'type' => 'class', 'description' => 'Range Harga di Bawah 30 Juta'],
         ];
 
         // Merek
@@ -24,8 +24,8 @@ class CategorySeeder extends Seeder
             ['name' => 'Honda', 'type' => 'brand', 'description' => 'Merek Honda'],
             ['name' => 'Yamaha', 'type' => 'brand', 'description' => 'Merek Yamaha'],
             ['name' => 'Suzuki', 'type' => 'brand', 'description' => 'Merek Suzuki'],
-            ['name' => 'Toyota', 'type' => 'brand', 'description' => 'Merek Toyota'],
-            ['name' => 'Daihatsu', 'type' => 'brand', 'description' => 'Merek Daihatsu'],
+            ['name' => 'Vespa', 'type' => 'brand', 'description' => 'Merek Vespa'],
+            ['name' => 'Kawasaki', 'type' => 'brand', 'description' => 'Merek Kawasaki'],
         ];
 
         // Kelengkapan Dokumen
@@ -38,8 +38,8 @@ class CategorySeeder extends Seeder
         // Kondisi Kendaraan
         $conditions = [
             ['name' => 'Mulus', 'type' => 'condition', 'description' => 'Kondisi sangat baik'],
-            ['name' => 'Normal', 'type' => 'condition', 'description' => 'Kondisi normal dengan sedikit perbaikan'],
-            ['name' => 'Butuh Perbaikan', 'type' => 'condition', 'description' => 'Memerlukan perbaikan signifikan'],
+            ['name' => 'Normal', 'type' => 'condition', 'description' => 'Kondisi normal dengan'],
+            ['name' => 'Butuh Perbaikan', 'type' => 'condition', 'description' => 'Memerlukan perbaikan'],
         ];
 
         // Insert all categories
