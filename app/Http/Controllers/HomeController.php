@@ -12,7 +12,7 @@ class HomeController extends Controller
     {
         $query = Kendaraan::query();
 
-        // Apply category filter if selected
+        // Terapkan filter kategori jika dipilih
         if ($request->filled('category')) {
             $query->whereHas('categories', function ($q) use ($request) {
                 $q->where('categories.id', $request->category);
@@ -29,6 +29,20 @@ class HomeController extends Controller
         $totalProfit = Kendaraan::getTotalProfit();
         $categories = Category::all();
 
-        return view('home', compact('kendaraans', 'totalKendaraan', 'totalTerjual', 'totalProfit', 'kendaraanTerjual', 'categories'));
+        // Data untuk statistik penjualan berdasarkan kelas kategori
+        $classCategories = Category::where('type', 'class')->get();
+        $salesByClass = [];
+
+        foreach ($classCategories as $category) {
+            $soldVehicles = Kendaraan::where('status', 'terjual')
+                ->whereHas('categories', function ($q) use ($category) {
+                    $q->where('categories.id', $category->id);
+                })
+                ->count();
+
+            $salesByClass[$category->name] = $soldVehicles;
+        }
+
+        return view('home', compact('kendaraans', 'totalKendaraan', 'totalTerjual', 'totalProfit', 'kendaraanTerjual', 'categories', 'salesByClass'));
     }
 }

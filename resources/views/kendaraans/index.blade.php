@@ -125,7 +125,7 @@
                         <td>Rp {{ number_format($kendaraan->harga_modal, 0, ',', '.') }}</td>
                         <td>Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</td>
                         <td>
-                            <span class="badge bg-{{ $kendaraan->status == 'tersedia' ? 'success' : 'secondary' }}">
+                            <span class="badge bg-{{ $kendaraan->status == 'tersedia' ? 'success' : 'danger' }}">
                                 {{ ucfirst($kendaraan->status) }}
                             </span>
                         </td>
@@ -150,8 +150,16 @@
                                     <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         <input type="hidden" name="status" value="terjual">
-                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Apakah Anda yakin ingin menandai kendaraan ini sebagai terjual?')">
+                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Apakah Anda yakin ingin menandai kendaraan ini sebagai terjual?')" title="Tandai sebagai Terjual">
                                             <i class="fa fa-check"></i>
+                                        </button>
+                                    </form>
+                                @elseif($kendaraan->status == 'terjual')
+                                    <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="status" value="tersedia">
+                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Apakah Anda yakin ingin mengembalikan status kendaraan ini ke tersedia?')" title="Kembalikan ke Tersedia">
+                                            <i class="fa fa-undo"></i>
                                         </button>
                                     </form>
                                 @endif

@@ -19,17 +19,18 @@ class DokumenKendaraanController extends Controller
             if ($request->has('search')) {
                 $query->where('nomor_dokumen', 'like', "%{$request->search}%");
             }
-        }])->has('dokumen');
+        }]) ->orderByRaw("CASE WHEN status = 'tersedia' THEN 0 ELSE 1 END")
+            ->latest();
 
         // Filter berdasarkan kendaraan
         if ($request->has('kendaraan_id') && $request->kendaraan_id != '') {
             $kendaraanQuery->where('id', $request->kendaraan_id);
         }
 
-        // Get paginated kendaraans
+        // Dapatkan kendaraan dengan paginasi
         $kendaraans_page = $kendaraanQuery->latest()->paginate(10);
 
-        // Transform the paginator to work with our existing view
+        // Transformasi paginator agar dapat bekerja dengan view yang ada
         $dokumenKendaraans = collect();
         foreach ($kendaraans_page as $kendaraan) {
             foreach ($kendaraan->dokumen as $dokumen) {
@@ -37,7 +38,7 @@ class DokumenKendaraanController extends Controller
             }
         }
 
-        // We'll pass both the paginator and the transformed collection
+        // Kita akan memberikan paginator dan koleksi yang sudah ditransformasi
         return view('dokumen-kendaraans.index', compact('dokumenKendaraans', 'kendaraans', 'kendaraans_page'));
     }
 

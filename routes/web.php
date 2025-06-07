@@ -18,10 +18,11 @@ use App\Http\Controllers\CategoryController;
 */
 
 Route::get('/', [HomeController::class, 'index']);
-// Route untuk artikel
 Route::resource('kendaraans', KendaraanController::class);
 Route::post('/kendaraans/{id}/update-status', [KendaraanController::class, 'updateStatus'])->name('kendaraans.updateStatus');
 Route::resource('dokumen-kendaraans', DokumenKendaraanController::class);
 Route::resource('categories', CategoryController::class);
-
+Route::get('/kendaraans', function () {
+return 'Selamat datang di halaman kelola kendaraan!';
+})->middleware('check.age');
 Route::get('/home', [HomeController::class, 'index'])->name('home');

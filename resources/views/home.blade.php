@@ -6,13 +6,13 @@
 <div class="row">
     <div class="col-md-3">
         <a href="" class="text-decoration-none">
-            <div class="card bg-primary text-white hover-card">
+            <div class="card bg-white shadow hover-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle bg-white bg-opacity-25 p-3">
-                            <i class="fas fa-motorcycle fa-2x"></i>
+                        <div class="rounded-circle p-3 bg-primary">
+                            <i class="fas fa-motorcycle fa-2x text-white"></i>
                         </div>
-                        <div class="ms-3">
+                        <div class="ms-3 text-dark">
                             <h6 class="mb-1">Total Kendaraan</h6>
                             <h3 class="mb-0">{{ $totalKendaraan }}</h3>
                         </div>
@@ -23,13 +23,13 @@
     </div>
     <div class="col-md-3">
         <a href="#kendaraanTersedia" class="text-decoration-none">
-            <div class="card bg-success text-white hover-card">
+            <div class="card bg-white shadow hover-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle bg-white bg-opacity-25 p-3">
-                            <i class="fas fa-check fa-2x"></i>
+                        <div class="rounded-circle p-3 bg-success">
+                            <i class="fas fa-check fa-2x text-white"></i>
                         </div>
-                        <div class="ms-3">
+                        <div class="ms-3 text-dark">
                             <h6 class="mb-1">Kendaraan Tersedia</h6>
                             <h3 class="mb-0">{{ $kendaraans->where('status', 'tersedia')->count() }}</h3>
                         </div>
@@ -40,13 +40,13 @@
     </div>
     <div class="col-md-3">
         <a href="#kendaraanTerjual" class="text-decoration-none">
-            <div class="card bg-danger text-white hover-card">
+            <div class="card bg-white shadow hover-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle bg-white bg-opacity-25 p-3">
-                            <i class="fas fa-times fa-2x "></i>
+                        <div class="rounded-circle p-3 bg-danger">
+                            <i class="fas fa-times fa-2x text-white"></i>
                         </div>
-                        <div class="ms-3">
+                        <div class="ms-3 text-dark">
                             <h6 class="mb-1">Kendaraan Terjual</h6>
                             <h3 class="mb-0">{{ $totalTerjual }}</h3>
                         </div>
@@ -57,13 +57,13 @@
     </div>
     <div class="col-md-3">
         <a href="#kendaraanTerjual" class="text-decoration-none">
-            <div class="card bg-info text-white hover-card">
+            <div class="card bg-white shadow hover-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle bg-white bg-opacity-25 p-3">
-                            <i class="fas fa-money-bill fa-2x"></i>
+                        <div class="rounded-circle p-3 bg-info">
+                            <i class="fas fa-money-bill fa-2x text-white"></i>
                         </div>
-                        <div class="ms-3">
+                        <div class="ms-3 text-dark">
                             <h6 class="mb-1">Total Keuntungan</h6>
                             <h3 class="mb-0">Rp {{ number_format($totalProfit, 0, ',', '.') }}</h3>
                         </div>
@@ -93,11 +93,11 @@
             <div class="card-header">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-chart-pie me-2"></i>
-                    Perbandingan Status Kendaraan
+                    Statistik Penjualan Berdasarkan Kelas
                 </h5>
             </div>
             <div class="card-body">
-                <canvas id="statusChart"></canvas>
+                <canvas id="classChart"></canvas>
             </div>
         </div>
     </div>
@@ -230,6 +230,7 @@
                                 <th>Harga Modal</th>
                                 <th>Harga Jual</th>
                                 <th>Keuntungan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -241,6 +242,14 @@
                                 <td>Rp {{ number_format($kendaraan->harga_modal, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($kendaraan->getProfit(), 0, ',', '.') }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ route('kendaraans.show', $kendaraan->id) }}" class="btn btn-sm btn-primary" title="Lihat Detail">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                
                             </tr>
                             @endforeach
                         </tbody>
@@ -298,34 +307,40 @@ window.addEventListener('load', function() {
 
     }
 
-    // Data untuk diagram lingkaran status kendaraan
-    const statusData = {
-        'Tersedia': {{ $kendaraans->where('status', 'tersedia')->count() }},
-        'Terjual': {{ $kendaraanTerjual->count() }}
-    };
+    // Data untuk diagram garis statistik penjualan berdasarkan kelas
+    const classData = {!! json_encode($salesByClass) !!};
 
-    const statusChart = new Chart(document.getElementById('statusChart').getContext('2d'), {
-        type: 'pie',
-        data: {
-            labels: Object.keys(statusData),
-            datasets: [{
-                data: Object.values(statusData),
-                backgroundColor: ['#1cc88a', '#4e73df']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                title: {
-                    display: true,
-                    text: 'Status Kendaraan'
+    // Pastikan ada data sebelum membuat chart
+    if (Object.keys(classData).length > 0) {
+        const classChart = new Chart(document.getElementById('classChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(classData),
+                datasets: [{
+                    data: Object.values(classData),
+                    backgroundColor: [
+                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                        '#858796', '#5a5c69', '#2e59d9', '#17a673', '#2c9faf'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Penjualan per Kelas Kendaraan'
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 });
 </script>
 @endpush

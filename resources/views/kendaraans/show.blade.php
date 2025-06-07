@@ -8,16 +8,35 @@
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">
                 Detail Kendaraan
-                <span class="badge bg-{{ $kendaraan->status === 'tersedia' ? 'success' : 'secondary' }}">
+                <span class="badge bg-{{ $kendaraan->status === 'tersedia' ? 'success' : 'danger' }}">
                     {{ ucfirst($kendaraan->status) }}
                 </span>
             </h4>
             <div class="ms-auto">
+                @if($kendaraan->status == 'tersedia')
+                    <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline me-2">
+                        @csrf
+                        <input type="hidden" name="status" value="terjual">
+                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Apakah Anda yakin ingin menandai kendaraan ini sebagai terjual?')" title="Tandai sebagai Terjual">
+                            <i class="fa fa-check"></i>
+                            Tandai Terjual
+                        </button>
+                    </form>
+                @elseif($kendaraan->status == 'terjual')
+                    <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline me-2">
+                        @csrf
+                        <input type="hidden" name="status" value="tersedia">
+                        <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Apakah Anda yakin ingin mengembalikan status kendaraan ini ke tersedia?')" title="Kembalikan ke Tersedia">
+                            <i class="fa fa-undo"></i>
+                            Kembalikan ke Tersedia
+                        </button>
+                    </form>
+                @endif
                 <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-sm btn-info">
                     <i class="fa fa-edit"></i>
                     Edit Data
                 </a>
-                <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary btn-sm">
+                <a href="{{ route('kendaraans.index') }}" class="btn btn-danger btn-sm">
                     <i class="fa fa-arrow-left"></i>
                     Kembali
                 </a>
@@ -81,7 +100,7 @@
 
                 <!-- Kategori -->
                 <div class="card">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="fa fa-tags me-2"></i>
                             Kategori Kendaraan
@@ -168,7 +187,7 @@
 
                 <!-- Dokumen Kendaraan -->
                 <div class="card">
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="fa fa-file-alt me-2"></i>
                             Dokumen Kendaraan

@@ -77,7 +77,7 @@
             <!-- Kategori Merek -->
             <div class="col-md-6 mb-4">
                 <div class="card">
-                    <div class="card-header d-flex align-items-center bg-success text-white">
+                    <div class="card-header d-flex align-items-center bg-primary text-white">
                         <h6 class="mb-0">
                             <i class="fa fa-trademark me-2"></i>
                             Merek Kendaraan
@@ -128,7 +128,7 @@
             <!-- Kategori Dokumen -->
             <div class="col-md-6 mb-4">
                 <div class="card">
-                    <div class="card-header d-flex align-items-center bg-info text-white">
+                    <div class="card-header d-flex align-items-center bg-primary text-white">
                         <h6 class="mb-0">
                             <i class="fa fa-file-alt me-2"></i>
                             Kelengkapan Dokumen
@@ -179,7 +179,7 @@
             <!-- Kategori Kondisi -->
             <div class="col-md-6 mb-4">
                 <div class="card">
-                    <div class="card-header d-flex align-items-center bg-warning">
+                    <div class="card-header d-flex align-items-center bg-primary text-white">
                         <h6 class="mb-0">
                             <i class="fa fa-check-circle me-2"></i>
                             Kondisi Kendaraan

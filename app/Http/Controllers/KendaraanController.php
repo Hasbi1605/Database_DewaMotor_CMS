@@ -10,7 +10,9 @@ class KendaraanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Kendaraan::with(['dokumen', 'categories'])->latest();
+        $query = Kendaraan::with(['dokumen', 'categories'])
+            ->orderByRaw("CASE WHEN status = 'tersedia' THEN 0 ELSE 1 END")
+            ->latest();
 
         // Pencarian berdasarkan nomor rangka, mesin, atau polisi
         if ($request->filled('search')) {
@@ -84,7 +86,7 @@ class KendaraanController extends Controller
         // Simpan data kendaraan ke database  
         $kendaraan = Kendaraan::create($validatedData);
 
-        // Attach categories if provided
+        // Sinkronisasi kategori jika disediakan
         if ($request->has('categories')) {
             $kendaraan->categories()->attach($request->categories);
         }
@@ -100,7 +102,7 @@ class KendaraanController extends Controller
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
 
-        // Get document status
+        // Dapatkan status dokumen
         $requiredDocs = ['STNK', 'BPKB', 'Faktur'];
         $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
         $missingDocs = array_diff($requiredDocs, $existingDocs);
@@ -139,7 +141,7 @@ class KendaraanController extends Controller
 
         $kendaraan->update($validatedData);
 
-        // Sync categories
+        // Sinkronisasi kategori
         if ($request->has('categories')) {
             $kendaraan->categories()->sync($request->categories);
         } else {

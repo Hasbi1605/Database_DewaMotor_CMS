@@ -48,3 +48,5 @@ class DokumenKendaraanSeeder extends Seeder
         }
     }
 }
+
+

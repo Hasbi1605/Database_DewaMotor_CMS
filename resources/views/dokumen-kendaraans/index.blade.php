@@ -35,7 +35,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-search"></i> Cari
                         </button>
-                        <a href="{{ route('dokumen-kendaraans.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('dokumen-kendaraans.index') }}" class="btn btn-danger">
                             <i class="fa fa-refresh"></i> Reset
                         </a>
                     </div>
@@ -75,7 +75,7 @@
                             <br>
                             <small class="text-muted">{{ $dokumenGroup->first()->kendaraan->nomor_polisi }}</small>
                             <br>
-                            <span class="badge {{ $dokumenGroup->first()->kendaraan->status === 'tersedia' ? 'bg-success' : 'bg-secondary' }}">
+                            <span class="badge {{ $dokumenGroup->first()->kendaraan->status === 'tersedia' ? 'bg-success' : 'bg-danger' }}">
                                 {{ ucfirst($dokumenGroup->first()->kendaraan->status) }}
                             </span>
                         </td>
@@ -155,12 +155,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = this.dataset.row;
             const selectedId = this.value;
             
-            // Hide all dokumen info in this row
+            // Sembunyikan semua info dokumen di baris ini
             document.querySelectorAll(`.dokumen-detail-${row}`).forEach(el => {
                 el.style.display = 'none';
             });
             
-            // Show selected dokumen info
+            // Tampilkan info dokumen yang dipilih
             if (selectedId) {
                 document.querySelector(`.dokumen-detail-${row}[data-dokumen-id="${selectedId}"]`).style.display = 'block';
             }

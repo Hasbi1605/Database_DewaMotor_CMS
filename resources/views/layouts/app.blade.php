@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/app.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 
     @stack('styles')
 </head>
@@ -22,8 +23,8 @@
             <div class="sidebar-wrapper">
                 <div class="sidebar-header text-center">
                     <div class="header-text">
+                            <i class="bi bi-slack fa-3x me-2" style="color: rgba(255, 255, 255, 0.95);"></i>
                         <div class="d-flex align-items-center justify-content-center mb-1">
-                            <i class="fas fa-motorcycle fa-2x me-2" style="color: rgba(255, 255, 255, 0.95);"></i>
                             <h1 style="color: rgba(255, 255, 255, 0.95); font-size: 24px; font-weight: bold; margin: 0;">Dewa Motor</h1>
                         </div>
                         <small style="color: rgba(255, 255, 255, 0.7); font-size: 12px;">database management</small>

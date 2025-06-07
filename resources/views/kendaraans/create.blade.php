@@ -7,7 +7,7 @@
     <div class="card-header">
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">Tambah Kendaraan Baru</h4>
-            <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary btn-round ms-auto">
+            <a href="{{ route('kendaraans.index') }}" class="btn btn-danger btn-round ms-auto">
                 <i class="fa fa-arrow-left"></i>
                 Kembali
             </a>

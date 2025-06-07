@@ -25,7 +25,7 @@ class Category extends Model
         return $this->belongsToMany(Kendaraan::class, 'kendaraan_category');
     }
 
-    // Helper method to get categories by type
+    // Method helper untuk mendapatkan kategori berdasarkan tipe
     public static function getByType($type)
     {
         return self::where('type', $type)->get();

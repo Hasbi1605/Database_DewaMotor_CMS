@@ -8,11 +8,11 @@
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">
                 Edit Kendaraan
-                <span class="badge bg-{{ $kendaraan->status === 'aktif' ? 'success' : 'secondary' }}">
+                <span class="badge bg-{{ $kendaraan->status === 'tersedia' ? 'success' : 'danger' }}">
                     {{ ucfirst($kendaraan->status) }}
                 </span>
             </h4>
-            <a href="{{ route('kendaraans.index') }}" class="btn btn-secondary btn-round ms-auto">
+            <a href="{{ route('kendaraans.index') }}" class="btn btn-pr btn-danger ms-auto">
                 <i class="fa fa-arrow-left"></i>
                 Kembali
             </a>
