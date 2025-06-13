@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ImageController; // taruh diatas
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DokumenKendaraanController;
@@ -22,3 +23,6 @@ Route::post('/kendaraans/{id}/update-status', [KendaraanController::class, 'upda
 Route::resource('dokumen-kendaraans', DokumenKendaraanController::class);
 Route::resource('categories', CategoryController::class);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/upload', [ImageController::class, 'create'])->name('upload.form');
+Route::post('/upload', [ImageController::class, 'store'])->name('image.upload');
+Route::delete('/image/{id}', [ImageController::class, 'delete'])->name('image.delete');
