@@ -80,15 +80,26 @@ class KendaraanController extends Controller
             'tahun_pembuatan' => 'required|integer',
             'harga_modal' => 'required|numeric',
             'harga_jual' => 'required|numeric',
-            'categories' => 'array',
+            'class_category' => 'nullable|exists:categories,id',
+            'brand_category' => 'nullable|exists:categories,id',
+            'document_category' => 'nullable|exists:categories,id',
+            'condition_category' => 'nullable|exists:categories,id',
         ]);
 
         // Simpan data kendaraan ke database  
         $kendaraan = Kendaraan::create($validatedData);
 
-        // Sinkronisasi kategori jika disediakan
-        if ($request->has('categories')) {
-            $kendaraan->categories()->attach($request->categories);
+        // Collect category IDs from individual fields
+        $categoryIds = array_filter([
+            $request->class_category,
+            $request->brand_category,
+            $request->document_category,
+            $request->condition_category
+        ]);
+
+        // Attach categories if any were selected
+        if (!empty($categoryIds)) {
+            $kendaraan->categories()->attach($categoryIds);
         }
 
         // Redirect ke halaman daftar dengan pesan sukses  
@@ -131,7 +142,10 @@ class KendaraanController extends Controller
             'tahun_pembuatan' => 'required|integer',
             'harga_modal' => 'required|numeric',
             'harga_jual' => 'required|numeric',
-            'categories' => 'array',
+            'class_category' => 'nullable|exists:categories,id',
+            'brand_category' => 'nullable|exists:categories,id',
+            'document_category' => 'nullable|exists:categories,id',
+            'condition_category' => 'nullable|exists:categories,id',
         ]);
 
         $kendaraan = Kendaraan::find($id);
@@ -141,12 +155,16 @@ class KendaraanController extends Controller
 
         $kendaraan->update($validatedData);
 
-        // Sinkronisasi kategori
-        if ($request->has('categories')) {
-            $kendaraan->categories()->sync($request->categories);
-        } else {
-            $kendaraan->categories()->detach();
-        }
+        // Collect category IDs from individual fields
+        $categoryIds = array_filter([
+            $request->class_category,
+            $request->brand_category,
+            $request->document_category,
+            $request->condition_category
+        ]);
+
+        // Sync categories - this will remove old ones and add new ones
+        $kendaraan->categories()->sync($categoryIds);
 
         return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil diperbarui.');
     }

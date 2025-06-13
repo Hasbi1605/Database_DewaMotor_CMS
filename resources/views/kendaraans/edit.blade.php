@@ -33,10 +33,12 @@
         <form action="{{ route('kendaraans.update', $kendaraan->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="row">
-                <div class="col-md-6">
+            <!-- Informasi Identitas Kendaraan -->
+            <div class="row mb-4">
+                <div class="col-12">
                     <h5 class="mb-3">Informasi Identitas Kendaraan</h5>
-                    
+                </div>
+                <div class="col-md-4">
                     <div class="form-group mb-3">
                         <label for="nomor_rangka" class="form-label">Nomor Rangka</label>
                         <div class="input-group">
@@ -44,7 +46,8 @@
                             <input type="text" class="form-control" id="nomor_rangka" name="nomor_rangka" value="{{ old('nomor_rangka', $kendaraan->nomor_rangka) }}" required>
                         </div>
                     </div>
-
+                </div>
+                <div class="col-md-4">
                     <div class="form-group mb-3">
                         <label for="nomor_mesin" class="form-label">Nomor Mesin</label>
                         <div class="input-group">
@@ -52,7 +55,8 @@
                             <input type="text" class="form-control" id="nomor_mesin" name="nomor_mesin" value="{{ old('nomor_mesin', $kendaraan->nomor_mesin) }}" required>
                         </div>
                     </div>
-
+                </div>
+                <div class="col-md-4">
                     <div class="form-group mb-3">
                         <label for="nomor_polisi" class="form-label">Nomor Polisi</label>
                         <div class="input-group">
@@ -61,10 +65,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-6">
+            <!-- Detail Kendaraan -->
+            <div class="row">
+                <div class="col-12">
                     <h5 class="mb-3">Detail Kendaraan</h5>
-
+                </div>
+                <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label for="merek" class="form-label">Merek</label>
                         <div class="input-group">
@@ -88,7 +96,9 @@
                             <input type="number" class="form-control" id="tahun_pembuatan" name="tahun_pembuatan" value="{{ old('tahun_pembuatan', $kendaraan->tahun_pembuatan) }}" required>
                         </div>
                     </div>
+                </div>
 
+                <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label for="harga_modal" class="form-label">Harga Modal</label>
                         <div class="input-group">
@@ -104,101 +114,95 @@
                             <input type="number" class="form-control" id="harga_jual" name="harga_jual" value="{{ old('harga_jual', $kendaraan->harga_jual) }}" step="0.01" required>
                         </div>
                     </div>
+                </div>
+            </div>
 
+            <!-- Kategori Kendaraan -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="mb-3">Kategori Kendaraan</h5>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group mb-3">
-                        <label for="status" class="form-label">Status</label>
+                        <label for="class_category" class="form-label">Kelas Kendaraan</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-info-circle"></i></span>
-                            <select class="form-select" id="status" name="status" required>
-                                <option value="aktif" {{ old('status', $kendaraan->status) === 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                <option value="nonaktif" {{ old('status', $kendaraan->status) === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                            <span class="input-group-text"><i class="fa fa-layer-group"></i></span>
+                            <select class="form-select" id="class_category" name="class_category">
+                                <option value="">Pilih Kelas Kendaraan</option>
+                                @foreach($categories['class'] ?? [] as $category)
+                                    @php
+                                        $isSelected = $kendaraan->categories->where('type', 'class')->pluck('id')->contains($category->id);
+                                    @endphp
+                                    <option value="{{ $category->id }}" 
+                                        {{ old('class_category', $isSelected ? $category->id : '') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
                 </div>
-
-                <!-- Kategori Kendaraan -->
-                <div class="col-12">
-                    <h5 class="mb-3">Kategori Kendaraan</h5>
-                    
-                    <!-- Kelas Kendaraan -->
-                    <div class="mb-3">
-                        <label class="form-label">Kelas Kendaraan</label>
-                        <div class="row">
-                            @foreach($categories['class'] ?? [] as $category)
-                            <div class="col-md-4">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" name="categories[]" 
-                                        value="{{ $category->id }}" id="category{{ $category->id }}"
-                                        {{ in_array($category->id, old('categories', $kendaraan->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="category{{ $category->id }}">
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label for="brand_category" class="form-label">Kategori Merek</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-trademark"></i></span>
+                            <select class="form-select" id="brand_category" name="brand_category">
+                                <option value="">Pilih Kategori Merek</option>
+                                @foreach($categories['brand'] ?? [] as $category)
+                                    @php
+                                        $isSelected = $kendaraan->categories->where('type', 'brand')->pluck('id')->contains($category->id);
+                                    @endphp
+                                    <option value="{{ $category->id }}" 
+                                        {{ old('brand_category', $isSelected ? $category->id : '') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
-                                    </label>
-                                </div>
-                            </div>
-                            @endforeach
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
-
-                    <!-- Merek -->
-                    <div class="mb-3">
-                        <label class="form-label">Merek</label>
-                        <div class="row">
-                            @foreach($categories['brand'] ?? [] as $category)
-                            <div class="col-md-4">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" name="categories[]" 
-                                        value="{{ $category->id }}" id="category{{ $category->id }}"
-                                        {{ in_array($category->id, old('categories', $kendaraan->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="category{{ $category->id }}">
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label for="document_category" class="form-label">Kelengkapan Dokumen</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-file-alt"></i></span>
+                            <select class="form-select" id="document_category" name="document_category">
+                                <option value="">Pilih Kelengkapan Dokumen</option>
+                                @foreach($categories['document'] ?? [] as $category)
+                                    @php
+                                        $isSelected = $kendaraan->categories->where('type', 'document')->pluck('id')->contains($category->id);
+                                    @endphp
+                                    <option value="{{ $category->id }}" 
+                                        {{ old('document_category', $isSelected ? $category->id : '') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
-                                    </label>
-                                </div>
-                            </div>
-                            @endforeach
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
-
-                    <!-- Kelengkapan Dokumen -->
-                    <div class="mb-3">
-                        <label class="form-label">Kelengkapan Dokumen</label>
-                        <div class="row">
-                            @foreach($categories['document'] ?? [] as $category)
-                            <div class="col-md-4">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" name="categories[]" 
-                                        value="{{ $category->id }}" id="category{{ $category->id }}"
-                                        {{ in_array($category->id, old('categories', $kendaraan->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="category{{ $category->id }}">
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label for="condition_category" class="form-label">Kondisi Kendaraan</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-wrench"></i></span>
+                            <select class="form-select" id="condition_category" name="condition_category">
+                                <option value="">Pilih Kondisi Kendaraan</option>
+                                @foreach($categories['condition'] ?? [] as $category)
+                                    @php
+                                        $isSelected = $kendaraan->categories->where('type', 'condition')->pluck('id')->contains($category->id);
+                                    @endphp
+                                    <option value="{{ $category->id }}" 
+                                        {{ old('condition_category', $isSelected ? $category->id : '') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
-                                    </label>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Kondisi Kendaraan -->
-                    <div class="mb-3">
-                        <label class="form-label">Kondisi Kendaraan</label>
-                        <div class="row">
-                            @foreach($categories['condition'] ?? [] as $category)
-                            <div class="col-md-4">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" name="categories[]" 
-                                        value="{{ $category->id }}" id="category{{ $category->id }}"
-                                        {{ in_array($category->id, old('categories', $kendaraan->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="category{{ $category->id }}">
-                                        {{ $category->name }}
-                                    </label>
-                                </div>
-                            </div>
-                            @endforeach
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="text-end mt-3">
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-save me-2"></i>

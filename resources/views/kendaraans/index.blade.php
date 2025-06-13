@@ -63,13 +63,18 @@
                         <option value="terjual" {{ request('status') == 'terjual' ? 'selected' : '' }}>Terjual</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="text" name="tahun" class="form-control" placeholder="Tahun Pembuatan" value="{{ request('tahun') }}">
                 </div>
-                <div class="col-md-1">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fa fa-search"></i>
-                    </button>
+                <div class="col-md-2">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <a href="{{ route('kendaraans.index') }}" class="btn btn-danger flex-fill">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </form>
