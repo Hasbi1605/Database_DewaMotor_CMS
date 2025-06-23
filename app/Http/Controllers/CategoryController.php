@@ -53,43 +53,68 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $category = Category::findOrFail($id);
+            return view('categories.show', compact('category'));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('categories.index')
+                ->with('error', 'Kategori tidak ditemukan');
+        }
     }
 
     /**
      * Menampilkan form untuk edit resource yang spesifik.
      */
-    public function edit(Category $category)
+    public function edit(string $id)
     {
-        $types = ['class', 'brand', 'document', 'condition'];
-        return view('categories.edit', compact('category', 'types'));
+        try {
+            $category = Category::findOrFail($id);
+            $types = ['class', 'brand', 'document', 'condition'];
+            return view('categories.edit', compact('category', 'types'));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('categories.index')
+                ->with('error', 'Kategori tidak ditemukan');
+        }
     }
 
     /**
      * Memperbarui resource yang spesifik di storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, string $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|in:class,brand,document,condition',
-            'description' => 'nullable|string'
-        ]);
+        try {
+            $category = Category::findOrFail($id);
 
-        $category->update($validated);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'type' => 'required|string|in:class,brand,document,condition',
+                'description' => 'nullable|string'
+            ]);
 
-        return redirect()->route('categories.index')
-            ->with('success', 'Kategori berhasil diperbarui');
+            $category->update($validated);
+
+            return redirect()->route('categories.index')
+                ->with('success', 'Kategori berhasil diperbarui');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('categories.index')
+                ->with('error', 'Kategori tidak ditemukan');
+        }
     }
 
     /**
      * Menghapus resource yang spesifik dari storage.
      */
-    public function destroy(Category $category)
+    public function destroy(string $id)
     {
-        $category->delete();
+        try {
+            $category = Category::findOrFail($id);
+            $category->delete();
 
-        return redirect()->route('categories.index')
-            ->with('success', 'Kategori berhasil dihapus');
+            return redirect()->route('categories.index')
+                ->with('success', 'Kategori berhasil dihapus');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('categories.index')
+                ->with('error', 'Kategori tidak ditemukan');
+        }
     }
 }
