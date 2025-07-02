@@ -6,6 +6,7 @@ use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DokumenKendaraanController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\StoreController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,6 +24,7 @@ Route::post('/kendaraans/{id}/update-status', [KendaraanController::class, 'upda
 Route::resource('dokumen-kendaraans', DokumenKendaraanController::class);
 Route::resource('categories', CategoryController::class);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/upload', [ImageController::class, 'create'])->name('upload.form');
-Route::post('/upload', [ImageController::class, 'store'])->name('image.upload');
-Route::delete('/image/{id}', [ImageController::class, 'delete'])->name('image.delete');
+
+// Store Routes for Customers
+Route::get('/store', [StoreController::class, 'index'])->name('store.index');
+Route::get('/store/{id}', [StoreController::class, 'show'])->name('store.show');

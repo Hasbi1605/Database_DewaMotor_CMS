@@ -57,6 +57,12 @@
                             <p>Kelola Kategori</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('store.index') }}" class="nav-link" target="_blank">
+                            <i class="fas fa-store"></i>
+                            <p>Halaman Store</p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

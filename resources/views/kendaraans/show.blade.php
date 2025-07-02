@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header">
+    <div class="">
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">
                 Detail Kendaraan
@@ -48,7 +48,7 @@
             <div class="col-md-8">
                 <!-- Informasi Identitas -->
                 <div class="card mb-4">
-                    <div class="card-header">
+                    <div class="card-header bg-primary text-white ">
                         <h5 class="mb-0">
                             <i class="fa fa-id-card me-2"></i>
                             Informasi Identitas Kendaraan
@@ -74,7 +74,7 @@
 
                 <!-- Detail Kendaraan -->
                 <div class="card mb-4">
-                    <div class="card-header">
+                    <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="fa fa-info-circle me-2"></i>
                             Detail Kendaraan
