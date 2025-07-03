@@ -134,7 +134,7 @@
                     
                     <div class="d-grid gap-3">
                         <!-- WhatsApp Button -->
-                        <a href="https://wa.me/6281234567890?text=Halo, saya tertarik dengan motor {{ $kendaraan->merek }} {{ $kendaraan->model }} tahun {{ $kendaraan->tahun_pembuatan }}. Bisakah saya mendapatkan informasi lebih lanjut?" 
+                        <a href="https://wa.me/6282135277434?text=Halo, saya tertarik dengan motor {{ $kendaraan->merek }} {{ $kendaraan->model }} tahun {{ $kendaraan->tahun_pembuatan }}. Bisakah saya mendapatkan informasi lebih lanjut?" 
                            target="_blank" 
                            class="btn btn-success btn-lg">
                             <i class="fab fa-whatsapp me-2"></i>
@@ -142,13 +142,13 @@
                         </a>
 
                         <!-- Phone Button -->
-                        <a href="tel:+6281234567890" class="btn btn-primary btn-lg">
+                        <a href="tel:+6282135277434" class="btn btn-primary btn-lg">
                             <i class="fas fa-phone me-2"></i>
                             Telepon Sekarang
                         </a>
 
                         <!-- Visit Store Button -->
-                        <a href="https://maps.google.com" target="_blank" class="btn btn-outline-primary btn-lg">
+                        <a href="https://maps.app.goo.gl/GDqPT6xRwyg5KmgdA" target="_blank" class="btn btn-outline-primary btn-lg">
                             <i class="fas fa-map-marker-alt me-2"></i>
                             Kunjungi Toko
                         </a>
@@ -165,7 +165,7 @@
                         
                         <div class="info-item mb-2">
                             <i class="fas fa-map-marker-alt text-muted me-2"></i>
-                            <small>Jl. Raya Motor No. 123, Jakarta</small>
+                            <small>Jl. Pandanaran - Uii</small>
                         </div>
                         
                         <div class="info-item mb-2">
@@ -175,7 +175,7 @@
                         
                         <div class="info-item">
                             <i class="fas fa-envelope text-muted me-2"></i>
-                            <small>info@dewamotor.com</small>
+                            <small>infodewamotor@gmail.com</small>
                         </div>
                     </div>
                 </div>
@@ -212,10 +212,6 @@
                                         <span>
                                             <i class="fas fa-calendar-alt me-1"></i>
                                             {{ $motor->tahun_pembuatan }}
-                                        </span>
-                                        <span>
-                                            <i class="fas fa-cog me-1"></i>
-                                            Manual
                                         </span>
                                     </div>
 

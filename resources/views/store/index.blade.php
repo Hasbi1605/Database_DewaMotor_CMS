@@ -172,10 +172,6 @@
                                         <i class="fas fa-calendar-alt me-1"></i>
                                         {{ $kendaraan->tahun_pembuatan }}
                                     </span>
-                                    <span>
-                                        <i class="fas fa-cog me-1"></i>
-                                        {{ $kendaraan->nomor_mesin ? 'Manual' : 'Matic' }}
-                                    </span>
                                 </div>
 
                                 <!-- Categories -->
@@ -195,9 +191,9 @@
                                         <i class="fas fa-eye me-1"></i>
                                         Lihat Detail
                                     </a>
-                                    <a href="https://wa.me/6281234567890?text=Halo, saya tertarik dengan motor {{ $kendaraan->merek }} {{ $kendaraan->model }} tahun {{ $kendaraan->tahun_pembuatan }}" 
+                                    <a href="https://wa.me/6282135277434?text=Halo, saya tertarik dengan motor {{ $kendaraan->merek }} {{ $kendaraan->model }} tahun {{ $kendaraan->tahun_pembuatan }}" 
                                        target="_blank" 
-                                       class="btn btn-outline-primary">
+                                       class="btn btn-outline-success">
                                         <i class="fab fa-whatsapp me-1"></i>
                                         WhatsApp
                                     </a>
@@ -246,8 +242,8 @@
                             <div class="card-body text-center py-4">
                                 <i class="fab fa-whatsapp fa-3x text-success mb-3"></i>
                                 <h5>WhatsApp</h5>
-                                <p class="text-muted">+62 812-3456-7890</p>
-                                <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success">
+                                <p class="text-muted">+62 821-3527-7434</p>
+                                <a href="https://wa.me/6282135277434" target="_blank" class="btn btn-success">
                                     Chat Sekarang
                                 </a>
                             </div>
@@ -258,8 +254,8 @@
                             <div class="card-body text-center py-4">
                                 <i class="fas fa-phone fa-3x text-primary mb-3"></i>
                                 <h5>Telepon</h5>
-                                <p class="text-muted">+62 812-3456-7890</p>
-                                <a href="tel:+6281234567890" class="btn btn-primary">
+                                <p class="text-muted">+62 821-3527-7434</p>
+                                <a href="tel:+6282135277434" class="btn btn-primary">
                                     Telepon Sekarang
                                 </a>
                             </div>
@@ -270,8 +266,8 @@
                             <div class="card-body text-center py-4">
                                 <i class="fas fa-map-marker-alt fa-3x text-danger mb-3"></i>
                                 <h5>Alamat</h5>
-                                <p class="text-muted">Jl. Raya Motor No. 123</p>
-                                <a href="https://maps.google.com" target="_blank" class="btn btn-danger">
+                                <p class="text-muted">Jalan Pandanaran - Uii</p>
+                                <a href="https://maps.app.goo.gl/GDqPT6xRwyg5KmgdA" target="_blank" class="btn btn-danger">
                                     Lihat Lokasi
                                 </a>
                             </div>
