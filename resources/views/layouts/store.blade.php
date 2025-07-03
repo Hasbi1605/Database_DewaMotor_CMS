@@ -292,9 +292,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('store.index') }}">
-                            <i class="fas fa-motorcycle me-1"></i>
-                            Motor
+                        <a class="nav-link" href="/" target="_blank">
+                            <i class="fas fa-user-shield me-1"></i>
+                            Admin
                         </a>
                     </li>
                     <li class="nav-item">

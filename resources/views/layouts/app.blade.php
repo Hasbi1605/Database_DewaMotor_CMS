@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="                        <button type="submit" class="btn btn-outline-light logout-btn w-100 d-flex align-items-center justify-content-center" 
+                                style="border: 2px solid rgba(255, 255, 255, 0.3); background: transparent; color: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 5px; transition: all 0.3s ease;">ewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dewa Motor')</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,6 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/app.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    
+    <style>
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: rgba(255, 255, 255, 1) !important;
+        }
+    </style>
 
     @stack('styles')
 </head>
@@ -58,10 +66,19 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('store.index') }}" class="nav-link" target="_blank">
+                        <a href="{{ route('store.index') }}" class="nav-link">
                             <i class="fas fa-store"></i>
                             <p>Halaman Store</p>
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <p>Logout</p>
+                        </a>
+                        <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
+                            @csrf
+                        </form>
                     </li>
                 </ul>
             </div>
