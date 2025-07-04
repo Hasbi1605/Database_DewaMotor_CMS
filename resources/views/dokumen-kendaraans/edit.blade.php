@@ -42,7 +42,7 @@
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
@@ -103,16 +103,10 @@
                         <label for="file" class="form-label">File Dokumen</label>
                         <!-- Preview File yang Ada -->
                         @if($dokumenKendaraan->file_path)
-                            <div class="mb-2 d-flex align-items-center gap-2">
+                            <div class="mb-2">
                                 <a href="{{ asset('storage/' . $dokumenKendaraan->file_path) }}" target="_blank" class="btn btn-sm btn-info">
                                     <i class="fa fa-file me-2"></i>Lihat File Saat Ini
                                 </a>
-                                <form action="{{ route('dokumen-kendaraans.remove-file', $dokumenKendaraan->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus file ini?')">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fa fa-trash me-2"></i>Hapus File
-                                    </button>
-                                </form>
                             </div>
                         @endif
                         <input type="file" class="form-control" id="file" name="file" accept=".pdf,.jpg,.jpeg,.png">

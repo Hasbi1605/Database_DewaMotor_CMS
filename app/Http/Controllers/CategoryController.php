@@ -59,7 +59,12 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
             return view('categories.show', compact('category'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            Log::error('Kategori tidak ditemukan dengan ID: ' . $id . ' - ' . $e->getMessage());
+            Log::error("Error menampilkan kategori: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }
@@ -76,7 +81,12 @@ class CategoryController extends Controller
             $types = ['class', 'brand', 'document', 'condition'];
             return view('categories.edit', compact('category', 'types'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            Log::error('Kategori tidak ditemukan untuk edit dengan ID: ' . $id . ' - ' . $e->getMessage());
+            Log::error("Error menampilkan form edit: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }
@@ -102,7 +112,12 @@ class CategoryController extends Controller
             return redirect()->route('categories.index')
                 ->with('success', 'Kategori berhasil diperbarui');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            Log::error('Kategori tidak ditemukan untuk update dengan ID: ' . $id . ' - ' . $e->getMessage());
+            Log::error("Error memperbarui kategori: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }
@@ -121,7 +136,12 @@ class CategoryController extends Controller
             return redirect()->route('categories.index')
                 ->with('success', 'Kategori berhasil dihapus');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            Log::error('Kategori tidak ditemukan untuk hapus dengan ID: ' . $id . ' - ' . $e->getMessage());
+            Log::error("Error menghapus kategori: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }

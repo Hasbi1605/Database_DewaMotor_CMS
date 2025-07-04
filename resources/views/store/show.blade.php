@@ -256,9 +256,31 @@
                     @foreach($relatedMotors as $motor)
                         <div class="col-lg-3 col-md-4 col-sm-6">
                             <div class="motor-card">
-                                <!-- Gambar Motor Placeholder -->
+                                <!-- Gambar Motor -->
                                 <div class="motor-image">
-                                    <i class="fas fa-motorcycle"></i>
+                                    @if($motor->photos && count($motor->photos) > 0)
+                                        <div class="position-relative">
+                                            <img src="{{ asset('storage/' . $motor->photos[0]) }}" 
+                                                 alt="{{ $motor->merek }} {{ $motor->model }}"
+                                                 class="img-fluid w-100"
+                                                 style="height: 200px; object-fit: cover; border-radius: 10px;">
+                                            
+                                            @if(count($motor->photos) > 1)
+                                            <!-- Badge Jumlah Foto -->
+                                            <div class="position-absolute top-0 end-0 m-2">
+                                                <span class="badge bg-dark bg-opacity-75 text-white">
+                                                    <i class="fas fa-images me-1"></i>
+                                                    {{ count($motor->photos) }}
+                                                </span>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <div class="placeholder-image d-flex align-items-center justify-content-center" 
+                                             style="height: 200px; background: linear-gradient(45deg, #f3f4f6, #e5e7eb); border-radius: 10px;">
+                                            <i class="fas fa-motorcycle text-muted" style="font-size: 3rem;"></i>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <!-- Info Motor -->

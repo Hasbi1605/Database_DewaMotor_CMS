@@ -6,6 +6,7 @@ use App\Models\Kendaraan;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class KendaraanController extends Controller
 {
@@ -126,107 +127,146 @@ class KendaraanController extends Controller
 
     public function show($id)
     {
-        $kendaraan = Kendaraan::with(['dokumen', 'categories'])->find($id);
-        if (!$kendaraan) {
+        try {
+            Log::info('Menampilkan kendaraan dengan ID: ' . $id);
+            $kendaraan = Kendaraan::with(['dokumen', 'categories'])->findOrFail($id);
+
+            // Dapatkan status dokumen
+            $requiredDocs = ['STNK', 'BPKB', 'Faktur'];
+            $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
+            $missingDocs = array_diff($requiredDocs, $existingDocs);
+
+            return view('kendaraans.show', compact('kendaraan', 'missingDocs', 'requiredDocs'));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error menampilkan kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
-
-        // Dapatkan status dokumen
-        $requiredDocs = ['STNK', 'BPKB', 'Faktur'];
-        $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
-        $missingDocs = array_diff($requiredDocs, $existingDocs);
-
-        return view('kendaraans.show', compact('kendaraan', 'missingDocs', 'requiredDocs'));
     }
 
     public function edit($id)
     {
-        $kendaraan = Kendaraan::with('categories')->find($id);
-        if (!$kendaraan) {
+        try {
+            Log::info('Menampilkan form edit untuk kendaraan dengan ID: ' . $id);
+            $kendaraan = Kendaraan::with('categories')->findOrFail($id);
+            $categories = Category::all()->groupBy('type');
+            return view('kendaraans.edit', compact('kendaraan', 'categories'));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error menampilkan form edit kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
-        $categories = Category::all()->groupBy('type');
-        return view('kendaraans.edit', compact('kendaraan', 'categories'));
     }
 
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'nomor_rangka' => 'required|string|max:255',
-            'nomor_mesin' => 'required|string|max:255',
-            'nomor_polisi' => 'required|string|max:255',
-            'merek' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'tahun_pembuatan' => 'required|integer',
-            'harga_modal' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
-            'class_category' => 'nullable|exists:categories,id',
-            'brand_category' => 'nullable|exists:categories,id',
-            'document_category' => 'nullable|exists:categories,id',
-            'condition_category' => 'nullable|exists:categories,id',
-            'photos' => 'nullable|array|max:10', // Maksimal 10 foto
-            'photos.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048' // Setiap foto maksimal 2MB
-        ]);
+        try {
+            Log::info('Memperbarui kendaraan dengan ID: ' . $id);
+            $validatedData = $request->validate([
+                'nomor_rangka' => 'required|string|max:255',
+                'nomor_mesin' => 'required|string|max:255',
+                'nomor_polisi' => 'required|string|max:255',
+                'merek' => 'required|string|max:255',
+                'model' => 'required|string|max:255',
+                'tahun_pembuatan' => 'required|integer',
+                'harga_modal' => 'required|numeric',
+                'harga_jual' => 'required|numeric',
+                'class_category' => 'nullable|exists:categories,id',
+                'brand_category' => 'nullable|exists:categories,id',
+                'document_category' => 'nullable|exists:categories,id',
+                'condition_category' => 'nullable|exists:categories,id',
+                'photos' => 'nullable|array|max:10', // Maksimal 10 foto
+                'photos.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048' // Setiap foto maksimal 2MB
+            ]);
 
-        $kendaraan = Kendaraan::find($id);
-        if (!$kendaraan) {
+            $kendaraan = Kendaraan::findOrFail($id);
+
+            // Tangani unggahan foto
+            $photoPaths = $kendaraan->photos ?? [];
+            if ($request->hasFile('photos')) {
+                foreach ($request->file('photos') as $photo) {
+                    $path = $photo->store('kendaraan-photos', 'public');
+                    $photoPaths[] = $path;
+                }
+            }
+
+            // Hapus validasi foto dari data utama
+            unset($validatedData['photos']);
+
+            // Tambahkan foto ke data yang divalidasi
+            $validatedData['photos'] = $photoPaths;
+
+            $kendaraan->update($validatedData);
+
+            // Kumpulkan ID kategori dari field individual
+            $categoryIds = array_filter([
+                $request->class_category,
+                $request->brand_category,
+                $request->document_category,
+                $request->condition_category
+            ]);
+
+            // Sinkronkan kategori - ini akan menghapus yang lama dan menambahkan yang baru
+            $kendaraan->categories()->sync($categoryIds);
+
+            return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil diperbarui.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error memperbarui kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
-
-        // Tangani unggahan foto
-        $photoPaths = $kendaraan->photos ?? [];
-        if ($request->hasFile('photos')) {
-            foreach ($request->file('photos') as $photo) {
-                $path = $photo->store('kendaraan-photos', 'public');
-                $photoPaths[] = $path;
-            }
-        }
-
-        // Hapus validasi foto dari data utama
-        unset($validatedData['photos']);
-
-        // Tambahkan foto ke data yang divalidasi
-        $validatedData['photos'] = $photoPaths;
-
-        $kendaraan->update($validatedData);
-
-        // Kumpulkan ID kategori dari field individual
-        $categoryIds = array_filter([
-            $request->class_category,
-            $request->brand_category,
-            $request->document_category,
-            $request->condition_category
-        ]);
-
-        // Sinkronkan kategori - ini akan menghapus yang lama dan menambahkan yang baru
-        $kendaraan->categories()->sync($categoryIds);
-
-        return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $kendaraan = Kendaraan::find($id);
-        if (!$kendaraan) {
+        try {
+            Log::info('Menghapus kendaraan dengan ID: ' . $id);
+            $kendaraan = Kendaraan::findOrFail($id);
+            $kendaraan->delete();
+
+            return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil dihapus.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error menghapus kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
-
-        $kendaraan->delete();
-
-        return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil dihapus.');
     }
 
     public function updateStatus(Request $request, $id)
     {
-        $kendaraan = Kendaraan::find($id);
-        if (!$kendaraan) {
+        try {
+            Log::info('Memperbarui status kendaraan dengan ID: ' . $id);
+            $kendaraan = Kendaraan::findOrFail($id);
+
+            $kendaraan->status = $request->status;
+            $kendaraan->save();
+
+            return redirect()->back()->with('success', 'Status kendaraan berhasil diperbarui.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error memperbarui status kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
-
-        $kendaraan->status = $request->status;
-        $kendaraan->save();
-
-        return redirect()->back()->with('success', 'Status kendaraan berhasil diperbarui.');
     }
 
     /**
@@ -234,21 +274,29 @@ class KendaraanController extends Controller
      */
     public function removePhoto(Request $request, $id)
     {
-        $kendaraan = Kendaraan::find($id);
-        if (!$kendaraan) {
+        try {
+            Log::info('Menghapus foto kendaraan dengan ID: ' . $id);
+            $kendaraan = Kendaraan::findOrFail($id);
+
+            $photoPath = $request->input('photo_path');
+
+            // Remove from storage
+            if (Storage::disk('public')->exists($photoPath)) {
+                Storage::disk('public')->delete($photoPath);
+            }
+
+            // Remove from database
+            $kendaraan->removePhoto($photoPath);
+
+            return response()->json(['success' => 'Foto berhasil dihapus.']);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error menghapus foto kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return response()->json(['error' => 'Kendaraan tidak ditemukan.'], 404);
         }
-
-        $photoPath = $request->input('photo_path');
-
-        // Remove from storage
-        if (Storage::disk('public')->exists($photoPath)) {
-            Storage::disk('public')->delete($photoPath);
-        }
-
-        // Remove from database
-        $kendaraan->removePhoto($photoPath);
-
-        return response()->json(['success' => 'Foto berhasil dihapus.']);
     }
 }

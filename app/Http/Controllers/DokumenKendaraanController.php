@@ -6,6 +6,7 @@ use App\Models\DokumenKendaraan;
 use App\Models\Kendaraan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DokumenKendaraanController extends Controller
 {
@@ -107,9 +108,20 @@ class DokumenKendaraanController extends Controller
      */
     public function edit(string $id)
     {
-        $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
-        $kendaraans = Kendaraan::all();
-        return view('dokumen-kendaraans.edit', compact('dokumenKendaraan', 'kendaraans'));
+        try {
+            Log::info('Menampilkan form edit untuk dokumen kendaraan dengan ID: ' . $id);
+            $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
+            $kendaraans = Kendaraan::all();
+            return view('dokumen-kendaraans.edit', compact('dokumenKendaraan', 'kendaraans'));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error menampilkan form edit dokumen kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return redirect()->route('dokumen-kendaraans.index')->with('error', 'Dokumen kendaraan tidak ditemukan.');
+        }
     }
 
     /**
@@ -117,33 +129,44 @@ class DokumenKendaraanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
+        try {
+            Log::info('Memperbarui dokumen kendaraan dengan ID: ' . $id);
+            $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
 
-        $request->validate([
-            'kendaraan_id' => 'required|exists:kendaraans,id',
-            'jenis_dokumen' => 'required',
-            'nomor_dokumen' => 'required',
-            'tanggal_terbit' => 'required|date',
-            'tanggal_expired' => 'nullable|date|after:tanggal_terbit',
-            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'keterangan' => 'nullable|string'
-        ]);
+            $request->validate([
+                'kendaraan_id' => 'required|exists:kendaraans,id',
+                'jenis_dokumen' => 'required',
+                'nomor_dokumen' => 'required',
+                'tanggal_terbit' => 'required|date',
+                'tanggal_expired' => 'nullable|date|after:tanggal_terbit',
+                'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'keterangan' => 'nullable|string'
+            ]);
 
-        $data = $request->except('file');
+            $data = $request->except('file');
 
-        if ($request->hasFile('file')) {
-            // Hapus file lama jika ada
-            $this->deleteFileIfExists($dokumenKendaraan->file_path);
+            if ($request->hasFile('file')) {
+                // Hapus file lama jika ada
+                $this->deleteFileIfExists($dokumenKendaraan->file_path);
 
-            $file = $request->file('file');
-            $path = $file->store('dokumen-kendaraan', 'public');
-            $data['file_path'] = $path;
+                $file = $request->file('file');
+                $path = $file->store('dokumen-kendaraan', 'public');
+                $data['file_path'] = $path;
+            }
+
+            $dokumenKendaraan->update($data);
+
+            return redirect()->route('dokumen-kendaraans.index')
+                ->with('success', 'Dokumen kendaraan berhasil diperbarui');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error memperbarui dokumen kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return redirect()->route('dokumen-kendaraans.index')->with('error', 'Dokumen kendaraan tidak ditemukan.');
         }
-
-        $dokumenKendaraan->update($data);
-
-        return redirect()->route('dokumen-kendaraans.index')
-            ->with('success', 'Dokumen kendaraan berhasil diperbarui');
     }
 
     /**
@@ -151,15 +174,26 @@ class DokumenKendaraanController extends Controller
      */
     public function destroy(string $id)
     {
-        $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
+        try {
+            Log::info('Menghapus dokumen kendaraan dengan ID: ' . $id);
+            $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
 
-        // Hapus file jika ada
-        $this->deleteFileIfExists($dokumenKendaraan->file_path);
+            // Hapus file jika ada
+            $this->deleteFileIfExists($dokumenKendaraan->file_path);
 
-        $dokumenKendaraan->delete();
+            $dokumenKendaraan->delete();
 
-        return redirect()->route('dokumen-kendaraans.index')
-            ->with('success', 'Dokumen kendaraan berhasil dihapus');
+            return redirect()->route('dokumen-kendaraans.index')
+                ->with('success', 'Dokumen kendaraan berhasil dihapus');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error menghapus dokumen kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return redirect()->route('dokumen-kendaraans.index')->with('error', 'Dokumen kendaraan tidak ditemukan.');
+        }
     }
 
     /**
@@ -167,17 +201,28 @@ class DokumenKendaraanController extends Controller
      */
     public function removeFile(string $id)
     {
-        $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
+        try {
+            Log::info('Menghapus file dari dokumen kendaraan dengan ID: ' . $id);
+            $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
 
-        // Hapus file jika ada
-        if ($this->deleteFileIfExists($dokumenKendaraan->file_path)) {
-            $dokumenKendaraan->update(['file_path' => null]);
+            // Hapus file jika ada
+            if ($this->deleteFileIfExists($dokumenKendaraan->file_path)) {
+                $dokumenKendaraan->update(['file_path' => null]);
+
+                return redirect()->route('dokumen-kendaraans.edit', $id)
+                    ->with('success', 'File dokumen berhasil dihapus');
+            }
 
             return redirect()->route('dokumen-kendaraans.edit', $id)
-                ->with('success', 'File dokumen berhasil dihapus');
+                ->with('error', 'File tidak ditemukan');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Error menghapus file dokumen kendaraan: " . $e->getMessage(), [
+                'request' => request()->all(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return redirect()->route('dokumen-kendaraans.index')->with('error', 'Dokumen kendaraan tidak ditemukan.');
         }
-
-        return redirect()->route('dokumen-kendaraans.edit', $id)
-            ->with('error', 'File tidak ditemukan');
     }
 }
