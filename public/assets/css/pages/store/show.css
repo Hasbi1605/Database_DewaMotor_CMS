@@ -1,0 +1,63 @@
+/* Store Show Page Styles */
+.motor-image-detail {
+    position: relative;
+    overflow: hidden;
+}
+
+.motor-image-detail .carousel-item img {
+    transition: none; /* Remove hover transition */
+}
+
+.motor-image-detail .carousel-item img:hover {
+    transform: none; /* Remove hover transform */
+}
+
+.spec-list .spec-item:last-child {
+    border-bottom: none !important;
+}
+
+.document-list .d-flex:last-child {
+    border-bottom: none !important;
+}
+
+.store-info .info-item {
+    display: flex;
+    align-items: center;
+}
+
+.photo-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.photo-thumbnail {
+    flex: 1 0 21%; /* Adjust the number of thumbnails per row */
+    cursor: pointer;
+    opacity: 1;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.photo-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+.photo-thumbnail.active {
+    border-color: #007bff;
+}
+
+.photo-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+@media (max-width: 991px) {
+    .photo-thumbnail {
+        flex: 1 0 46%; /* 2 thumbnails per row on smaller screens */
+    }
+}

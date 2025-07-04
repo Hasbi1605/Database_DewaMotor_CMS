@@ -7,12 +7,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Name
+    | Nama Aplikasi
     |--------------------------------------------------------------------------
     |
-    | This value is the name of your application. This value is used when the
-    | framework needs to place the application's name in a notification or
-    | any other location as required by the application or its packages.
+    | Nilai ini adalah nama aplikasi Anda. Nilai ini digunakan ketika
+    | framework perlu menempatkan nama aplikasi dalam notifikasi atau
+    | lokasi lain yang diperlukan oleh aplikasi atau paket-paketnya.
     |
     */
 
@@ -20,12 +20,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Environment
+    | Lingkungan Aplikasi
     |--------------------------------------------------------------------------
     |
-    | This value determines the "environment" your application is currently
-    | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
+    | Nilai ini menentukan "lingkungan" aplikasi Anda saat ini
+    | berjalan. Ini dapat menentukan bagaimana Anda lebih suka mengkonfigurasi
+    | berbagai layanan yang digunakan aplikasi. Atur ini di file ".env" Anda.
     |
     */
 
@@ -33,12 +33,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Debug Mode
+    | Mode Debug Aplikasi
     |--------------------------------------------------------------------------
     |
-    | When your application is in debug mode, detailed error messages with
-    | stack traces will be shown on every error that occurs within your
-    | application. If disabled, a simple generic error page is shown.
+    | Ketika aplikasi Anda dalam mode debug, pesan error terperinci dengan
+    | stack trace akan ditampilkan pada setiap error yang terjadi dalam
+    | aplikasi Anda. Jika dinonaktifkan, halaman error generik sederhana ditampilkan.
     |
     */
 
@@ -46,12 +46,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application URL
+    | URL Aplikasi
     |--------------------------------------------------------------------------
     |
-    | This URL is used by the console to properly generate URLs when using
-    | the Artisan command line tool. You should set this to the root of
-    | your application so that it is used when running Artisan tasks.
+    | URL ini digunakan oleh konsol untuk menghasilkan URL dengan benar saat
+    | menggunakan alat command line Artisan. Anda harus mengatur ini ke root
+    | aplikasi Anda sehingga digunakan saat menjalankan tugas Artisan.
     |
     */
 
@@ -61,12 +61,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Timezone
+    | Zona Waktu Aplikasi
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. We have gone
-    | ahead and set this to a sensible default for you out of the box.
+    | Di sini Anda dapat menentukan zona waktu default untuk aplikasi Anda, yang
+    | akan digunakan oleh fungsi tanggal dan waktu PHP. Kami telah melangkah
+    | lebih jauh dan mengatur ini ke default yang masuk akal untuk Anda.
     |
     */
 
@@ -74,12 +74,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Locale Configuration
+    | Konfigurasi Lokal Aplikasi
     |--------------------------------------------------------------------------
     |
-    | The application locale determines the default locale that will be used
-    | by the translation service provider. You are free to set this value
-    | to any of the locales which will be supported by the application.
+    | Lokal aplikasi menentukan lokal default yang akan digunakan
+    | oleh penyedia layanan terjemahan. Anda bebas mengatur nilai ini
+    | ke salah satu lokal yang akan didukung oleh aplikasi.
     |
     */
 
@@ -87,12 +87,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Fallback Locale
+    | Lokal Fallback Aplikasi
     |--------------------------------------------------------------------------
     |
-    | The fallback locale determines the locale to use when the current one
-    | is not available. You may change the value to correspond to any of
-    | the language folders that are provided through your application.
+    | Lokal fallback menentukan lokal yang akan digunakan ketika yang saat ini
+    | tidak tersedia. Anda dapat mengubah nilai ini agar sesuai dengan salah satu
+    | folder bahasa yang disediakan melalui aplikasi Anda.
     |
     */
 
@@ -100,12 +100,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Faker Locale
+    | Lokal Faker
     |--------------------------------------------------------------------------
     |
-    | This locale will be used by the Faker PHP library when generating fake
-    | data for your database seeds. For example, this will be used to get
-    | localized telephone numbers, street address information and more.
+    | Lokal ini akan digunakan oleh pustaka Faker PHP saat menghasilkan data
+    | palsu untuk seed database Anda. Sebagai contoh, ini akan digunakan untuk
+    | mendapatkan nomor telepon, informasi alamat jalan, dan lainnya yang terlokalisasi.
     |
     */
 
@@ -113,12 +113,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Encryption Key
+    | Kunci Enkripsi
     |--------------------------------------------------------------------------
     |
-    | This key is used by the Illuminate encrypter service and should be set
-    | to a random, 32 character string, otherwise these encrypted strings
-    | will not be safe. Please do this before deploying an application!
+    | Kunci ini digunakan oleh layanan enkripsi Illuminate dan harus diatur
+    | ke string acak 32 karakter, jika tidak string terenkripsi ini
+    | tidak akan aman. Silakan lakukan ini sebelum menyebarkan aplikasi!
     |
     */
 
@@ -128,14 +128,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Maintenance Mode Driver
+    | Driver Mode Maintenance
     |--------------------------------------------------------------------------
     |
-    | These configuration options determine the driver used to determine and
-    | manage Laravel's "maintenance mode" status. The "cache" driver will
-    | allow maintenance mode to be controlled across multiple machines.
+    | Opsi konfigurasi ini menentukan driver yang digunakan untuk menentukan dan
+    | mengelola status "mode maintenance" Laravel. Driver "cache" akan
+    | memungkinkan mode maintenance dikontrol di beberapa mesin.
     |
-    | Supported drivers: "file", "cache"
+    | Driver yang didukung: "file", "cache"
     |
     */
 
@@ -146,7 +146,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
+    | Penyedia Layanan Yang Dimuat Otomatis
     |--------------------------------------------------------------------------
     |
     | The service providers listed here will be automatically loaded on the

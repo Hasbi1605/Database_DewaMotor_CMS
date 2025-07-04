@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kendaraan;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class KendaraanController extends Controller
 {
@@ -84,12 +85,29 @@ class KendaraanController extends Controller
             'brand_category' => 'nullable|exists:categories,id',
             'document_category' => 'nullable|exists:categories,id',
             'condition_category' => 'nullable|exists:categories,id',
+            'photos' => 'nullable|array|max:10', // Maksimal 10 foto
+            'photos.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048' // Setiap foto maksimal 2MB
         ]);
+
+        // Tangani unggahan foto
+        $photoPaths = [];
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $path = $photo->store('kendaraan-photos', 'public');
+                $photoPaths[] = $path;
+            }
+        }
+
+        // Hapus validasi foto dari data utama
+        unset($validatedData['photos']);
+
+        // Tambahkan foto ke data yang divalidasi
+        $validatedData['photos'] = $photoPaths;
 
         // Simpan data kendaraan ke database  
         $kendaraan = Kendaraan::create($validatedData);
 
-        // Collect category IDs from individual fields
+        // Kumpulkan ID kategori dari field individual
         $categoryIds = array_filter([
             $request->class_category,
             $request->brand_category,
@@ -97,7 +115,7 @@ class KendaraanController extends Controller
             $request->condition_category
         ]);
 
-        // Attach categories if any were selected
+        // Pasang kategori jika ada yang dipilih
         if (!empty($categoryIds)) {
             $kendaraan->categories()->attach($categoryIds);
         }
@@ -146,6 +164,8 @@ class KendaraanController extends Controller
             'brand_category' => 'nullable|exists:categories,id',
             'document_category' => 'nullable|exists:categories,id',
             'condition_category' => 'nullable|exists:categories,id',
+            'photos' => 'nullable|array|max:10', // Maksimal 10 foto
+            'photos.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048' // Setiap foto maksimal 2MB
         ]);
 
         $kendaraan = Kendaraan::find($id);
@@ -153,9 +173,24 @@ class KendaraanController extends Controller
             return redirect()->route('kendaraans.index')->with('error', 'Kendaraan tidak ditemukan.');
         }
 
+        // Tangani unggahan foto
+        $photoPaths = $kendaraan->photos ?? [];
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $path = $photo->store('kendaraan-photos', 'public');
+                $photoPaths[] = $path;
+            }
+        }
+
+        // Hapus validasi foto dari data utama
+        unset($validatedData['photos']);
+
+        // Tambahkan foto ke data yang divalidasi
+        $validatedData['photos'] = $photoPaths;
+
         $kendaraan->update($validatedData);
 
-        // Collect category IDs from individual fields
+        // Kumpulkan ID kategori dari field individual
         $categoryIds = array_filter([
             $request->class_category,
             $request->brand_category,
@@ -163,7 +198,7 @@ class KendaraanController extends Controller
             $request->condition_category
         ]);
 
-        // Sync categories - this will remove old ones and add new ones
+        // Sinkronkan kategori - ini akan menghapus yang lama dan menambahkan yang baru
         $kendaraan->categories()->sync($categoryIds);
 
         return redirect()->route('kendaraans.index')->with('success', 'Kendaraan berhasil diperbarui.');
@@ -192,5 +227,28 @@ class KendaraanController extends Controller
         $kendaraan->save();
 
         return redirect()->back()->with('success', 'Status kendaraan berhasil diperbarui.');
+    }
+
+    /**
+     * Menghapus foto dari kendaraan
+     */
+    public function removePhoto(Request $request, $id)
+    {
+        $kendaraan = Kendaraan::find($id);
+        if (!$kendaraan) {
+            return response()->json(['error' => 'Kendaraan tidak ditemukan.'], 404);
+        }
+
+        $photoPath = $request->input('photo_path');
+
+        // Remove from storage
+        if (Storage::disk('public')->exists($photoPath)) {
+            Storage::disk('public')->delete($photoPath);
+        }
+
+        // Remove from database
+        $kendaraan->removePhoto($photoPath);
+
+        return response()->json(['success' => 'Foto berhasil dihapus.']);
     }
 }

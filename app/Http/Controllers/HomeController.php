@@ -10,24 +10,36 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Kendaraan::query();
+        // Query untuk kendaraan tersedia dengan pagination
+        $queryTersedia = Kendaraan::where('status', 'tersedia');
 
         // Terapkan filter kategori jika dipilih
         if ($request->filled('category')) {
-            $query->whereHas('categories', function ($q) use ($request) {
+            $queryTersedia->whereHas('categories', function ($q) use ($request) {
                 $q->where('categories.id', $request->category);
             });
         }
 
         // Mengurutkan kendaraan berdasarkan ID dari terbesar ke terkecil
-        $query->orderBy('id', 'desc');
+        $queryTersedia->orderBy('id', 'desc');
 
-        $kendaraans = $query->get();
-        $totalKendaraan = Kendaraan::count(); // mengambil total kendaraan
-        $kendaraanTerjual = Kendaraan::where('status', 'terjual')->get();
-        $totalTerjual = $kendaraanTerjual->count();
+        // Pagination untuk kendaraan tersedia
+        $kendaraans = $queryTersedia->paginate(10, ['*'], 'tersedia');
+        $kendaraans->appends($request->query());
+
+        // Query untuk kendaraan terjual dengan pagination
+        $queryTerjual = Kendaraan::where('status', 'terjual')->orderBy('id', 'desc');
+        $kendaraanTerjual = $queryTerjual->paginate(10, ['*'], 'terjual');
+        $kendaraanTerjual->appends($request->query());
+
+        // Data untuk statistik (tanpa pagination)
+        $totalKendaraan = Kendaraan::count();
+        $totalTerjual = Kendaraan::where('status', 'terjual')->count();
         $totalProfit = Kendaraan::getTotalProfit();
         $categories = Category::all();
+
+        // Data untuk chart (kendaraan terjual semua)
+        $kendaraanTerjualAll = Kendaraan::where('status', 'terjual')->get();
 
         // Data untuk statistik penjualan berdasarkan kelas kategori
         $classCategories = Category::where('type', 'class')->get();
@@ -43,6 +55,6 @@ class HomeController extends Controller
             $salesByClass[$category->name] = $soldVehicles;
         }
 
-        return view('home', compact('kendaraans', 'totalKendaraan', 'totalTerjual', 'totalProfit', 'kendaraanTerjual', 'categories', 'salesByClass'));
+        return view('home', compact('kendaraans', 'totalKendaraan', 'totalTerjual', 'totalProfit', 'kendaraanTerjual', 'kendaraanTerjualAll', 'categories', 'salesByClass'));
     }
 }

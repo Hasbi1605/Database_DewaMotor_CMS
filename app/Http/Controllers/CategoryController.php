@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -54,9 +55,11 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
+            Log::info('Menampilkan kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
             return view('categories.show', compact('category'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error('Kategori tidak ditemukan dengan ID: ' . $id . ' - ' . $e->getMessage());
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }
@@ -68,10 +71,12 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         try {
+            Log::info('Menampilkan form edit untuk kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
             $types = ['class', 'brand', 'document', 'condition'];
             return view('categories.edit', compact('category', 'types'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error('Kategori tidak ditemukan untuk edit dengan ID: ' . $id . ' - ' . $e->getMessage());
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }
@@ -83,6 +88,7 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         try {
+            Log::info('Memperbarui kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
 
             $validated = $request->validate([
@@ -96,6 +102,7 @@ class CategoryController extends Controller
             return redirect()->route('categories.index')
                 ->with('success', 'Kategori berhasil diperbarui');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error('Kategori tidak ditemukan untuk update dengan ID: ' . $id . ' - ' . $e->getMessage());
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }
@@ -107,12 +114,14 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         try {
+            Log::info('Menghapus kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
             $category->delete();
 
             return redirect()->route('categories.index')
                 ->with('success', 'Kategori berhasil dihapus');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error('Kategori tidak ditemukan untuk hapus dengan ID: ' . $id . ' - ' . $e->getMessage());
             return redirect()->route('categories.index')
                 ->with('error', 'Kategori tidak ditemukan');
         }

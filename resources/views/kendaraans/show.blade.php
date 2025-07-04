@@ -3,16 +3,22 @@
 @section('title', 'Detail Kendaraan')
 
 @section('content')
+<!-- Card Container untuk Detail Kendaraan -->
 <div class="card">
+    <!-- Header Card dengan Status dan Tombol Aksi -->
     <div class="">
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">
                 Detail Kendaraan
+                <!-- Badge Status Kendaraan -->
                 <span class="badge bg-{{ $kendaraan->status === 'tersedia' ? 'success' : 'danger' }}">
                     {{ ucfirst($kendaraan->status) }}
                 </span>
             </h4>
+            
+            <!-- Tombol Aksi di Kanan -->
             <div class="ms-auto">
+                <!-- Tombol Toggle Status -->
                 @if($kendaraan->status == 'tersedia')
                     <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline me-2">
                         @csrf
@@ -32,10 +38,14 @@
                         </button>
                     </form>
                 @endif
+                
+                <!-- Tombol Edit -->
                 <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-sm btn-info">
                     <i class="fa fa-edit"></i>
                     Edit Data
                 </a>
+                
+                <!-- Tombol Kembali -->
                 <a href="{{ route('kendaraans.index') }}" class="btn btn-danger btn-sm">
                     <i class="fa fa-arrow-left"></i>
                     Kembali
@@ -43,10 +53,57 @@
             </div>
         </div>
     </div>
+    
+    <!-- Body Card berisi Detail Kendaraan -->
     <div class="card-body">
         <div class="row">
+            <!-- Section Foto Kendaraan -->
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fa fa-camera me-2"></i>
+                            @if($kendaraan->photos && count($kendaraan->photos) > 0)
+                                Foto Kendaraan ({{ count($kendaraan->photos) }} foto)
+                            @else
+                                Foto Kendaraan
+                            @endif
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Grid Foto atau Pesan Kosong -->
+                        @if($kendaraan->photos && count($kendaraan->photos) > 0)
+                            <div class="row">
+                                @foreach($kendaraan->photos as $index => $photo)
+                                <div class="col-md-4 mb-3">
+                                    <div class="card">
+                                        <!-- Gambar dengan Modal Click -->
+                                        <img src="{{ asset('storage/' . $photo) }}" 
+                                             class="card-img-top" 
+                                             style="height: 250px; object-fit: cover; cursor: pointer;"
+                                             onclick="showImageModal('{{ asset('storage/' . $photo) }}', 'Foto {{ $kendaraan->merek }} {{ $kendaraan->model }} #{{ $index + 1 }}')">
+                                        <div class="card-body p-2 text-center">
+                                            <small class="text-muted">Foto {{ $index + 1 }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <!-- Pesan Tidak Ada Foto -->
+                            <div class="text-center text-muted py-4">
+                                <i class="fa fa-image fa-4x mb-3"></i>
+                                <h6>Belum ada foto untuk kendaraan ini</h6>
+                                <p class="mb-0">Klik <a href="{{ route('kendaraans.edit', $kendaraan->id) }}">Edit Data</a> untuk menambahkan foto.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Kiri: Informasi Detail -->
             <div class="col-md-8">
-                <!-- Informasi Identitas -->
+                <!-- Card Informasi Identitas -->
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white ">
                         <h5 class="mb-0">
@@ -72,7 +129,7 @@
                     </div>
                 </div>
 
-                <!-- Detail Kendaraan -->
+                <!-- Card Detail Kendaraan -->
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
@@ -98,7 +155,7 @@
                     </div>
                 </div>
 
-                <!-- Kategori -->
+                <!-- Card Kategori Kendaraan -->
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
@@ -157,7 +214,8 @@
                     </div>
                 </div>
             </div>
-
+            
+            <!-- Kolom Kanan: Informasi Harga dan Dokumen -->
             <div class="col-md-4">
                 <!-- Informasi Harga -->
                 <div class="card mb-4">
@@ -229,4 +287,28 @@
         </div>
     </div>
 </div>
+
+<!-- Modal untuk menampilkan gambar -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Foto Kendaraan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Foto Kendaraan" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showImageModal(imageSrc, title) {
+    document.getElementById('modalImage').src = imageSrc;
+    document.getElementById('imageModalLabel').textContent = title;
+    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    modal.show();
+}
+</script>
 @endsection

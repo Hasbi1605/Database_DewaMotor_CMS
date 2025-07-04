@@ -3,7 +3,9 @@
 @section('title', 'Dokumen Kendaraan')
 
 @section('content')
+<!-- Card Container untuk Daftar Dokumen Kendaraan -->
 <div class="card">
+    <!-- Header Card dengan Judul dan Tombol Tambah -->
     <div class="card-header">
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">Daftar Dokumen Kendaraan</h4>
@@ -13,10 +15,13 @@
             </a>
         </div>
     </div>
+    
+    <!-- Body Card berisi Form dan Tabel -->
     <div class="card-body">
-        <!-- Form Pencarian -->
+        <!-- Form Pencarian dan Filter -->
         <form action="{{ route('dokumen-kendaraans.index') }}" method="GET" class="mb-4">
             <div class="row g-3">
+                <!-- Filter Kendaraan -->
                 <div class="col-md-4">
                     <select name="kendaraan_id" class="form-select">
                         <option value="">Semua Kendaraan</option>
@@ -27,9 +32,13 @@
                         @endforeach
                     </select>
                 </div>
+                
+                <!-- Input Pencarian -->
                 <div class="col-md-3">
                     <input type="text" name="search" class="form-control" placeholder="Cari nomor dokumen" value="{{ request('search') }}">
                 </div>
+                
+                <!-- Tombol Cari dan Reset -->
                 <div class="col-md-2">
                     <div class="d-grid gap-2 d-md-flex">
                         <button type="submit" class="btn btn-primary">
@@ -43,6 +52,7 @@
             </div>
         </form>
 
+        <!-- Alert Success -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -50,6 +60,7 @@
             </div>
         @endif
 
+        <!-- Tabel Daftar Dokumen -->
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
@@ -62,13 +73,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- PHP untuk mengelompokkan dokumen berdasarkan kendaraan -->
                     @php
                         $groupedDokumen = $dokumenKendaraans->groupBy('kendaraan_id');
                     @endphp
                     
                     @forelse($groupedDokumen as $kendaraanId => $dokumenGroup)
                     <tr>
+                        <!-- Nomor Urut -->
                         <td>{{ ($kendaraans_page->currentPage() - 1) * $kendaraans_page->perPage() + $loop->iteration }}</td>
+                        
+                        <!-- Informasi Kendaraan -->
                         <td>
                             {{ $dokumenGroup->first()->kendaraan->merek }} 
                             {{ $dokumenGroup->first()->kendaraan->model }}
@@ -79,6 +94,8 @@
                                 {{ ucfirst($dokumenGroup->first()->kendaraan->status) }}
                             </span>
                         </td>
+                        
+                        <!-- Dropdown Selector Dokumen -->
                         <td>
                             <select class="form-select form-select-sm dokumen-selector" 
                                     data-row="{{ $loop->index }}"
@@ -89,6 +106,8 @@
                                 @endforeach
                             </select>
                         </td>
+                        
+                        <!-- Detail Dokumen (Dinamis berdasarkan pilihan) -->
                         <td>
                             @foreach($dokumenGroup as $dokumen)
                             <div class="dokumen-detail-{{ $loop->parent->index }} dokumen-info" 
@@ -105,6 +124,8 @@
                             </div>
                             @endforeach
                         </td>
+                        
+                        <!-- Tombol Aksi Edit dan Hapus -->
                         <td>
                             <div class="btn-group">
                                 <a href="{{ route('dokumen-kendaraans.edit', $dokumenGroup->first()->id) }}" 
@@ -133,12 +154,16 @@
             </table>
         </div>
 
+        <!-- Pagination dan Info -->
         <div class="mt-4 d-flex justify-content-between align-items-center">
+            <!-- Info Jumlah Data -->
             <div class="text-muted">
                 Menampilkan {{ $kendaraans_page->firstItem() }} 
                 sampai {{ $kendaraans_page->lastItem() }}
                 dari {{ $kendaraans_page->total() }} kendaraan
             </div>
+            
+            <!-- Pagination Links -->
             <div>
                 {{ $kendaraans_page->appends(request()->query())->links() }}
             </div>
@@ -146,9 +171,11 @@
     </div>
 </div>
 
+<!-- JavaScript untuk Interaksi Dinamis -->
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Event handler untuk selector dokumen
     const selectors = document.querySelectorAll('.dokumen-selector');
     selectors.forEach(selector => {
         selector.addEventListener('change', function() {

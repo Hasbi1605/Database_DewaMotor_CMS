@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Card Container untuk Detail Kategori -->
 <div class="card">
+    <!-- Header Card dengan Judul dan Tombol Aksi -->
     <div class="card-header">
         <div class="d-flex align-items-center">
             <div>
                 <h4 class="card-title mb-0">Detail Kategori</h4>
             </div>
+            <!-- Tombol Edit dan Kembali -->
             <div class="ms-auto">
                 <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm">
                     <i class="fa fa-edit"></i> Edit
@@ -18,9 +21,12 @@
         </div>
     </div>
 
+    <!-- Body Card berisi Detail Kategori -->
     <div class="card-body">
         <div class="row">
+            <!-- Kolom untuk Tabel Detail -->
             <div class="col-md-6">
+                <!-- Tabel Detail Kategori -->
                 <table class="table table-borderless">
                     <tr>
                         <td><strong>ID:</strong></td>
@@ -52,6 +58,7 @@
             </div>
         </div>
 
+        <!-- Form Hapus Kategori -->
         <div class="mt-3">
             <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline" 
                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">

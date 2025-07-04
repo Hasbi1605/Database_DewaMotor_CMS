@@ -10,7 +10,7 @@ use App\Models\User;
 class AuthController extends Controller
 {
     /**
-     * Show the login form
+     * Menampilkan form login
      */
     public function showLoginForm()
     {
@@ -23,7 +23,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle login request
+     * Menangani permintaan login
      */
     public function login(Request $request)
     {
@@ -54,7 +54,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle logout request
+     * Menangani permintaan logout
      */
     public function logout(Request $request)
     {
@@ -69,7 +69,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Show registration form (optional)
+     * Menampilkan form registrasi (opsional)
      */
     public function showRegisterForm()
     {
@@ -77,7 +77,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle registration (optional)
+     * Menangani registrasi (opsional)
      */
     public function register(Request $request)
     {

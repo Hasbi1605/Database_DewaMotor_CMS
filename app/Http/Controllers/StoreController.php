@@ -42,7 +42,7 @@ class StoreController extends Controller
             $query->where('tahun_pembuatan', '<=', $request->max_year);
         }
 
-        // Sorting
+        // Pengurutan
         $sortBy = $request->get('sort', 'created_at');
         $sortOrder = $request->get('order', 'desc');
 

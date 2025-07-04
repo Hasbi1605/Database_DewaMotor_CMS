@@ -3,7 +3,9 @@
 @section('title', 'Tambah Kendaraan')
 
 @section('content')
+<!-- Card Container untuk Form Tambah Kendaraan -->
 <div class="card">
+    <!-- Header Card dengan Judul dan Tombol Kembali -->
     <div class="card-header">
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">Tambah Kendaraan Baru</h4>
@@ -13,7 +15,10 @@
             </a>
         </div>
     </div>
+    
+    <!-- Body Card berisi Form -->
     <div class="card-body">
+        <!-- Alert untuk menampilkan Error Validasi -->
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <ul class="mb-0">
@@ -25,14 +30,16 @@
             </div>
         @endif
 
-        <form action="{{ route('kendaraans.store') }}" method="POST">
+        <!-- Form Tambah Kendaraan dengan Upload -->
+        <form action="{{ route('kendaraans.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
-            <!-- Informasi Identitas Kendaraan -->
+            <!-- Section 1: Informasi Identitas Kendaraan -->
             <div class="row mb-4">
                 <div class="col-12">
                     <h5 class="mb-3">Informasi Identitas Kendaraan</h5>
                 </div>
+                <!-- Input Nomor Rangka -->
                 <div class="col-md-4">
                     <div class="form-group mb-3">
                         <label for="nomor_rangka" class="form-label">Nomor Rangka</label>
@@ -42,6 +49,8 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Input Nomor Mesin -->
                 <div class="col-md-4">
                     <div class="form-group mb-3">
                         <label for="nomor_mesin" class="form-label">Nomor Mesin</label>
@@ -51,6 +60,8 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Input Nomor Polisi -->
                 <div class="col-md-4">
                     <div class="form-group mb-3">
                         <label for="nomor_polisi" class="form-label">Nomor Polisi</label>
@@ -62,12 +73,14 @@
                 </div>
             </div>
 
-            <!-- Detail Kendaraan -->
+            <!-- Section 2: Detail Kendaraan -->
             <div class="row">
                 <div class="col-12">
                     <h5 class="mb-3">Detail Kendaraan</h5>
                 </div>
+                <!-- Kolom Kiri: Merek, Model, Tahun -->
                 <div class="col-md-6">
+                    <!-- Input Merek -->
                     <div class="form-group mb-3">
                         <label for="merek" class="form-label">Merek</label>
                         <div class="input-group">
@@ -76,6 +89,7 @@
                         </div>
                     </div>
 
+                    <!-- Input Model -->
                     <div class="form-group mb-3">
                         <label for="model" class="form-label">Model</label>
                         <div class="input-group">
@@ -84,6 +98,7 @@
                         </div>
                     </div>
 
+                    <!-- Input Tahun Pembuatan -->
                     <div class="form-group mb-3">
                         <label for="tahun_pembuatan" class="form-label">Tahun Pembuatan</label>
                         <div class="input-group">
@@ -93,7 +108,9 @@
                     </div>
                 </div>
 
+                <!-- Kolom Kanan: Harga Modal dan Jual -->
                 <div class="col-md-6">
+                    <!-- Input Harga Modal -->
                     <div class="form-group mb-3">
                         <label for="harga_modal" class="form-label">Harga Modal</label>
                         <div class="input-group">
@@ -102,6 +119,7 @@
                         </div>
                     </div>
 
+                    <!-- Input Harga Jual -->
                     <div class="form-group mb-3">
                         <label for="harga_jual" class="form-label">Harga Jual</label>
                         <div class="input-group">
@@ -112,11 +130,12 @@
                 </div>
             </div>
 
-            <!-- Kategori Kendaraan -->
+            <!-- Section 3: Kategori Kendaraan -->
             <div class="row mb-4">
                 <div class="col-12">
                     <h5 class="mb-3">Kategori Kendaraan</h5>
                 </div>
+                <!-- Dropdown Kelas Kendaraan -->
                 <div class="col-md-3">
                     <div class="form-group mb-3">
                         <label for="class_category" class="form-label">Kelas Kendaraan</label>
@@ -134,6 +153,8 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Dropdown Kategori Merek -->
                 <div class="col-md-3">
                     <div class="form-group mb-3">
                         <label for="brand_category" class="form-label">Kategori Merek</label>
@@ -151,6 +172,8 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Dropdown Kelengkapan Dokumen -->
                 <div class="col-md-3">
                     <div class="form-group mb-3">
                         <label for="document_category" class="form-label">Kelengkapan Dokumen</label>
@@ -168,6 +191,8 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Dropdown Kondisi Kendaraan -->
                 <div class="col-md-3">
                     <div class="form-group mb-3">
                         <label for="condition_category" class="form-label">Kondisi Kendaraan</label>
@@ -187,6 +212,42 @@
                 </div>
             </div>
 
+            <!-- Section 4: Upload Foto Kendaraan -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="mb-3">Foto Kendaraan</h5>
+                </div>
+                <div class="col-12">
+                    <!-- Drag & Drop Zone untuk Upload Foto -->
+                    <div class="form-group mb-3">
+                        <label for="photos" class="form-label">Upload Foto</label>
+                        <div class="photo-upload-zone" id="photo-upload-zone">
+                            <div class="text-center">
+                                <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <h6>Drag & Drop foto di sini</h6>
+                                <p class="text-muted">atau</p>
+                                <input type="file" class="form-control" id="photos" name="photos[]" multiple accept="image/*" style="display: none;">
+                                <button type="button" class="btn btn-primary" onclick="document.getElementById('photos').click()">
+                                    <i class="fa fa-plus"></i> Pilih Foto
+                                </button>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">
+                            Pilih beberapa foto sekaligus. Format yang didukung: JPG, PNG, GIF. Maksimal 2MB per foto.
+                        </small>
+                    </div>
+                    
+                    <!-- Container Preview Foto -->
+                    <div id="photo-preview" class="row mt-3" style="display: none;">
+                        <div class="col-12">
+                            <h6>Preview Foto:</h6>
+                            <div id="preview-container" class="photo-preview-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Simpan -->
             <div class="text-end mt-3">
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-save me-2"></i>
@@ -196,4 +257,95 @@
         </form>
     </div>
 </div>
+
+<!-- JavaScript untuk Drag & Drop dan Preview Foto -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const photoInput = document.getElementById('photos');
+    const previewContainer = document.getElementById('preview-container');
+    const photoPreview = document.getElementById('photo-preview');
+    const uploadZone = document.getElementById('photo-upload-zone');
+    let selectedFiles = [];
+
+    // Event handler untuk drag and drop
+    uploadZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        handleFiles(files);
+    });
+
+    // Event handler untuk file input
+    photoInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        handleFiles(files);
+    });
+
+    // Fungsi untuk menangani file yang dipilih
+    function handleFiles(files) {
+        selectedFiles = Array.from(files);
+        displayPreviews();
+    }
+
+    // Fungsi untuk menampilkan preview foto
+    function displayPreviews() {
+        previewContainer.innerHTML = '';
+        
+        if (selectedFiles.length > 0) {
+            photoPreview.style.display = 'block';
+            
+            selectedFiles.forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const imageContainer = document.createElement('div');
+                        imageContainer.className = 'photo-preview-item';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'photo-preview-remove';
+                        removeBtn.innerHTML = '<i class="fa fa-times"></i>';
+                        removeBtn.onclick = function() {
+                            selectedFiles.splice(index, 1);
+                            updateFileInput();
+                            displayPreviews();
+                        };
+                        
+                        imageContainer.appendChild(img);
+                        imageContainer.appendChild(removeBtn);
+                        previewContainer.appendChild(imageContainer);
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+        } else {
+            photoPreview.style.display = 'none';
+        }
+    }
+
+    // Fungsi untuk update file input
+    function updateFileInput() {
+        const dt = new DataTransfer();
+        selectedFiles.forEach(file => dt.items.add(file));
+        photoInput.files = dt.files;
+    }
+});
+</script>
+
 @endsection

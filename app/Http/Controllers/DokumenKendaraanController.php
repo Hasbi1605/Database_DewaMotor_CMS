@@ -9,17 +9,28 @@ use Illuminate\Support\Facades\Storage;
 
 class DokumenKendaraanController extends Controller
 {
-    
+    /**
+     * Menghapus file dari storage jika ada
+     */
+    private function deleteFileIfExists($filePath)
+    {
+        if ($filePath && Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+            return true;
+        }
+        return false;
+    }
+
     public function index(Request $request)
     {
         $kendaraans = Kendaraan::all();
 
-    
+
         $kendaraanQuery = Kendaraan::with(['dokumen' => function ($query) use ($request) {
             if ($request->has('search')) {
                 $query->where('nomor_dokumen', 'like', "%{$request->search}%");
             }
-        }]) ->orderByRaw("CASE WHEN status = 'tersedia' THEN 0 ELSE 1 END")
+        }])->orderByRaw("CASE WHEN status = 'tersedia' THEN 0 ELSE 1 END")
             ->latest();
 
         // Filter berdasarkan kendaraan
@@ -43,7 +54,7 @@ class DokumenKendaraanController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan form untuk membuat resource baru.
      */
     public function create(Request $request)
     {
@@ -55,7 +66,7 @@ class DokumenKendaraanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan resource yang baru dibuat ke storage.
      */
     public function store(Request $request)
     {
@@ -84,7 +95,7 @@ class DokumenKendaraanController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan resource yang spesifik.
      */
     public function show(string $id)
     {
@@ -92,7 +103,7 @@ class DokumenKendaraanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk edit resource yang spesifik.
      */
     public function edit(string $id)
     {
@@ -102,7 +113,7 @@ class DokumenKendaraanController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui resource yang spesifik di storage.
      */
     public function update(Request $request, string $id)
     {
@@ -122,9 +133,7 @@ class DokumenKendaraanController extends Controller
 
         if ($request->hasFile('file')) {
             // Hapus file lama jika ada
-            if ($dokumenKendaraan->file_path && Storage::disk('public')->exists($dokumenKendaraan->file_path)) {
-                Storage::disk('public')->delete($dokumenKendaraan->file_path);
-            }
+            $this->deleteFileIfExists($dokumenKendaraan->file_path);
 
             $file = $request->file('file');
             $path = $file->store('dokumen-kendaraan', 'public');
@@ -138,20 +147,37 @@ class DokumenKendaraanController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus resource yang spesifik dari storage.
      */
     public function destroy(string $id)
     {
         $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
 
         // Hapus file jika ada
-        if ($dokumenKendaraan->file_path && Storage::disk('public')->exists($dokumenKendaraan->file_path)) {
-            Storage::disk('public')->delete($dokumenKendaraan->file_path);
-        }
+        $this->deleteFileIfExists($dokumenKendaraan->file_path);
 
         $dokumenKendaraan->delete();
 
         return redirect()->route('dokumen-kendaraans.index')
             ->with('success', 'Dokumen kendaraan berhasil dihapus');
+    }
+
+    /**
+     * Menghapus file dari dokumen kendaraan.
+     */
+    public function removeFile(string $id)
+    {
+        $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
+
+        // Hapus file jika ada
+        if ($this->deleteFileIfExists($dokumenKendaraan->file_path)) {
+            $dokumenKendaraan->update(['file_path' => null]);
+
+            return redirect()->route('dokumen-kendaraans.edit', $id)
+                ->with('success', 'File dokumen berhasil dihapus');
+        }
+
+        return redirect()->route('dokumen-kendaraans.edit', $id)
+            ->with('error', 'File tidak ditemukan');
     }
 }

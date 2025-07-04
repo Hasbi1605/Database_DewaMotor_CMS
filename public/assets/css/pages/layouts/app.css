@@ -112,3 +112,9 @@ body {
     margin: 0;
     font-size: 1.2em;
 }
+
+/* Logout button hover effects */
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
