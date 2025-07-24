@@ -113,17 +113,8 @@ class StoreController extends Controller
                 ->where('status', 'tersedia')
                 ->findOrFail($id);
 
-            // Motor yang serupa berdasarkan merek atau kategori
-            $relatedMotors = Kendaraan::where('status', 'tersedia')
-                ->where('id', '!=', $id)
-                ->where(function ($query) use ($kendaraan) {
-                    $query->where('merek', $kendaraan->merek)
-                        ->orWhereHas('categories', function ($q) use ($kendaraan) {
-                            $q->whereIn('categories.id', $kendaraan->categories->pluck('id'));
-                        });
-                })
-                ->limit(4)
-                ->get();
+            // Motor yang serupa berdasarkan algoritma scoring
+            $relatedMotors = $this->findSimilarMotors($kendaraan);
 
             return view('store.show', compact('kendaraan', 'relatedMotors'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -135,5 +126,78 @@ class StoreController extends Controller
             ]);
             return redirect()->route('store.index')->with('error', 'Kendaraan tidak ditemukan atau sudah tidak tersedia.');
         }
+    }
+
+    /**
+     * Mencari motor serupa berdasarkan berbagai kriteria dengan sistem scoring
+     */
+    private function findSimilarMotors($currentKendaraan)
+    {
+        $candidates = Kendaraan::with(['categories', 'dokumen'])
+            ->where('status', 'tersedia')
+            ->where('id', '!=', $currentKendaraan->id)
+            ->get();
+
+        // Hitung score untuk setiap kandidat
+        $scoredCandidates = $candidates->map(function ($candidate) use ($currentKendaraan) {
+            $score = 0;
+
+            // Score berdasarkan kategori yang sama (bobot tertinggi)
+            $currentCategoryIds = $currentKendaraan->categories->pluck('id')->toArray();
+            $candidateCategoryIds = $candidate->categories->pluck('id')->toArray();
+            $commonCategories = array_intersect($currentCategoryIds, $candidateCategoryIds);
+            $score += count($commonCategories) * 20; // 20 poin per kategori yang sama
+
+            // Score berdasarkan tipe kategori yang sama
+            $currentCategoryTypes = $currentKendaraan->categories->pluck('type')->unique()->toArray();
+            $candidateCategoryTypes = $candidate->categories->pluck('type')->unique()->toArray();
+            $commonTypes = array_intersect($currentCategoryTypes, $candidateCategoryTypes);
+            $score += count($commonTypes) * 15; // 15 poin per tipe kategori yang sama
+
+            // Score berdasarkan merek yang sama
+            if ($candidate->merek === $currentKendaraan->merek) {
+                $score += 25; // 25 poin untuk merek yang sama
+            }
+
+            // Score berdasarkan range harga yang mirip (±30%)
+            $priceRange = $currentKendaraan->harga_jual * 0.3;
+            $priceDiff = abs($candidate->harga_jual - $currentKendaraan->harga_jual);
+            if ($priceDiff <= $priceRange) {
+                $score += 20 - (($priceDiff / $priceRange) * 20); // Max 20 poin, berkurang sesuai selisih
+            }
+
+            // Score berdasarkan tahun pembuatan yang mirip (±3 tahun)
+            $yearDiff = abs($candidate->tahun_pembuatan - $currentKendaraan->tahun_pembuatan);
+            if ($yearDiff <= 3) {
+                $score += 15 - ($yearDiff * 5); // Max 15 poin, berkurang 5 per tahun
+            }
+
+            // Score berdasarkan kelengkapan dokumen yang mirip
+            $currentDocCount = $currentKendaraan->dokumen->count();
+            $candidateDocCount = $candidate->dokumen->count();
+            $docDiff = abs($candidateDocCount - $currentDocCount);
+            if ($docDiff <= 1) {
+                $score += 10 - ($docDiff * 5); // Max 10 poin
+            }
+
+            // Bonus untuk motor dengan foto
+            if ($candidate->photos && count($candidate->photos) > 0) {
+                $score += 5;
+            }
+
+            return [
+                'motor' => $candidate,
+                'score' => $score
+            ];
+        });
+
+        // Filter kandidat dengan score minimal 10 dan urutkan berdasarkan score tertinggi
+        return $scoredCandidates
+            ->filter(function ($item) {
+                return $item['score'] >= 10; // Minimal score untuk dianggap serupa
+            })
+            ->sortByDesc('score')
+            ->take(4)
+            ->pluck('motor');
     }
 }

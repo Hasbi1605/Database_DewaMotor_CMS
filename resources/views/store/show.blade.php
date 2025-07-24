@@ -260,26 +260,28 @@
                                 <div class="motor-image">
                                     @if($motor->photos && count($motor->photos) > 0)
                                         <div class="position-relative">
-                                            <img src="{{ asset('storage/' . $motor->photos[0]) }}" 
-                                                 alt="{{ $motor->merek }} {{ $motor->model }}"
-                                                 class="img-fluid w-100"
-                                                 style="height: 200px; object-fit: cover; border-radius: 10px;">
+                                            <a href="{{ route('store.show', $motor->id) }}">
+                                                <img src="{{ asset('storage/' . $motor->photos[0]) }}" 
+                                                     alt="{{ $motor->merek }} {{ $motor->model }}"
+                                                     class="img-fluid w-100"
+                                                     style="height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer;">
+                                            </a>
                                             
                                             @if(count($motor->photos) > 1)
                                             <!-- Badge Jumlah Foto -->
-                                            <div class="position-absolute top-0 end-0 m-2">
-                                                <span class="badge bg-dark bg-opacity-75 text-white">
-                                                    <i class="fas fa-images me-1"></i>
-                                                    {{ count($motor->photos) }}
-                                                </span>
+                                            <div class="photo-count-badge">
+                                                <i class="fas fa-images"></i>
+                                                {{ count($motor->photos) }}
                                             </div>
                                             @endif
                                         </div>
                                     @else
-                                        <div class="placeholder-image d-flex align-items-center justify-content-center" 
-                                             style="height: 200px; background: linear-gradient(45deg, #f3f4f6, #e5e7eb); border-radius: 10px;">
-                                            <i class="fas fa-motorcycle text-muted" style="font-size: 3rem;"></i>
-                                        </div>
+                                        <a href="{{ route('store.show', $motor->id) }}">
+                                            <div class="placeholder-image d-flex align-items-center justify-content-center" 
+                                                 style="height: 200px; background: linear-gradient(45deg, #f3f4f6, #e5e7eb); border-radius: 10px; cursor: pointer;">
+                                                <i class="fas fa-motorcycle text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                                        </a>
                                     @endif
                                 </div>
 
@@ -298,22 +300,29 @@
                                         </span>
                                     </div>
 
-                                    <!-- Badge Kategori -->
-                                    @if($motor->categories->count() > 0)
-                                        <div class="mb-3">
-                                            @foreach($motor->categories->take(2) as $category)
-                                                <span class="category-badge">{{ $category->name }}</span>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                    <!-- Badge Kategori -->
+                    @if($motor->categories->count() > 0)
+                        <div class="mb-3">
+                            @foreach($motor->categories->take(2) as $category)
+                                <span class="category-badge">{{ $category->name }}</span>
+                            @endforeach
+                        </div>
+                    @endif
 
-                                    <!-- Tombol Lihat Detail -->
-                                    <div class="d-grid gap-2">
-                                        <a href="{{ route('store.show', $motor->id) }}" class="btn btn-primary">
-                                            <i class="fas fa-eye me-1"></i>
-                                            Lihat Detail
-                                        </a>
-                                    </div>
+                    <!-- Tombol Aksi -->
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('store.show', $motor->id) }}" class="btn btn-primary">
+                            <i class="fas fa-eye me-1"></i>
+                            Lihat Detail
+                        </a>
+                        
+                        <a href="https://wa.me/6282135277434?text=Halo, saya tertarik dengan motor {{ $motor->merek }} {{ $motor->model }} tahun {{ $motor->tahun_pembuatan }}. Bisakah saya mendapatkan informasi lebih lanjut?" 
+                           target="_blank" 
+                           class="btn btn-outline-success">
+                            <i class="fab fa-whatsapp me-1"></i>
+                            WhatsApp
+                        </a>
+                    </div>
                                 </div>
                             </div>
                         </div>

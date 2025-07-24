@@ -28,6 +28,10 @@
                 </div>
                 <h1>Register Admin</h1>
                 <p>Buat akun admin baru untuk Dewa Motor</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Perhatian:</strong> Registrasi admin memerlukan token khusus. Hubungi administrator utama untuk mendapatkan token yang diperlukan.
+                </div>
             </div>
 
             <!-- Success Message -->
@@ -81,6 +85,26 @@
                         Email Address
                     </label>
                     @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-floating">
+                    <input type="text" 
+                           class="form-control @error('admin_token') is-invalid @enderror" 
+                           id="admin_token" 
+                           name="admin_token" 
+                           value="{{ old('admin_token') }}" 
+                           placeholder="Token Admin" 
+                           required>
+                    <label for="admin_token">
+                        <i class="fas fa-key me-2"></i>
+                        Token Admin
+                    </label>
+                    <small class="form-text text-muted">
+                        Masukkan token khusus admin untuk melanjutkan registrasi
+                    </small>
+                    @error('admin_token')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

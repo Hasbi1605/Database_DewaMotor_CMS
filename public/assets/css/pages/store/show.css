@@ -130,6 +130,43 @@
     background: linear-gradient(45deg, #f8f9fa, #e9ecef);
 }
 
+/* Motor Card Improvements */
+.motor-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.motor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.motor-card .motor-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.motor-card .motor-image img {
+    transition: transform 0.3s ease;
+}
+
+.motor-card .motor-image:hover img {
+    transform: scale(1.05);
+}
+
+.motor-card .motor-info {
+    padding: 1.25rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 @media (max-width: 768px) {
     .motor-card .motor-info {
         padding: 1rem;
@@ -155,4 +192,123 @@
     border-radius: 25px;
     font-size: 0.9rem;
     font-weight: 500;
+}
+
+/* Photo Count Badge for Similar Motors */
+.photo-count-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.photo-count-badge:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+}
+
+.photo-count-badge i {
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .photo-count-badge {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+        top: 6px;
+        right: 6px;
+    }
+
+    .photo-count-badge i {
+        font-size: 0.7rem;
+    }
+}
+
+/* Motor Card Action Buttons */
+.motor-card .btn {
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.motor-card .btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.motor-card .btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+.motor-card .btn-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    border: none;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.motor-card .btn-success:hover {
+    background: linear-gradient(135deg, #1e7e34, #155724);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.motor-card .btn-outline-success {
+    border: 2px solid #28a745;
+    color: #28a745;
+    background: transparent;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.motor-card .btn-outline-success:hover {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.motor-card .btn i {
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .motor-card .btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .motor-card .btn i {
+        font-size: 0.8rem;
+    }
+}
+
+/* Clickable image links in motor cards */
+.motor-card .motor-image a {
+    display: block;
+    text-decoration: none;
+}
+
+.motor-card .motor-image a:hover img {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.motor-card .motor-image a:hover .placeholder-image {
+    background: linear-gradient(45deg, #e5e7eb, #d1d5db) !important;
+    transition: all 0.3s ease;
 }

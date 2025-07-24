@@ -185,4 +185,16 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Token Registrasi Admin
+    |--------------------------------------------------------------------------
+    |
+    | Token khusus yang diperlukan untuk registrasi admin. Token ini harus
+    | diketahui oleh administrator untuk dapat membuat akun admin baru.
+    |
+    */
+
+    'admin_registration_token' => env('ADMIN_REGISTRATION_TOKEN', 'DEWAM0T0R2025'),
+
 ];

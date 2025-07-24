@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dewa Motor')</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -61,6 +62,12 @@
                         <a href="{{ route('store.index') }}" class="nav-link">
                             <i class="fas fa-store"></i>
                             <p>Halaman Store</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.token-info') }}" class="nav-link">
+                            <i class="fas fa-key"></i>
+                            <p>Token Admin</p>
                         </a>
                     </li>
                     <li class="nav-item">

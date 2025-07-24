@@ -7,6 +7,7 @@ use App\Http\Controllers\DokumenKendaraanController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminTokenController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,4 +40,8 @@ Route::middleware('admin.auth')->group(function () {
     Route::resource('dokumen-kendaraans', DokumenKendaraanController::class);
     Route::post('/dokumen-kendaraans/{id}/remove-file', [DokumenKendaraanController::class, 'removeFile'])->name('dokumen-kendaraans.remove-file');
     Route::resource('categories', CategoryController::class);
+
+    // Halaman informasi token admin
+    Route::get('/admin/token-info', [AdminTokenController::class, 'showTokenInfo'])->name('admin.token-info');
+    Route::post('/admin/generate-token', [AdminTokenController::class, 'generateNewToken'])->name('admin.generate-token');
 });

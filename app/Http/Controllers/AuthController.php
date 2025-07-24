@@ -118,6 +118,7 @@ class AuthController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:6|confirmed',
+                'admin_token' => 'required|string',
             ], [
                 'name.required' => 'Nama wajib diisi',
                 'email.required' => 'Email wajib diisi',
@@ -126,7 +127,17 @@ class AuthController extends Controller
                 'password.required' => 'Password wajib diisi',
                 'password.min' => 'Password minimal 6 karakter',
                 'password.confirmed' => 'Konfirmasi password tidak sesuai',
+                'admin_token.required' => 'Token admin wajib diisi',
             ]);
+
+            // Validasi token admin
+            $validToken = config('app.admin_registration_token');
+            if ($request->admin_token !== $validToken) {
+                Log::warning('Token admin tidak valid untuk registrasi: ' . $request->email);
+                return back()->withErrors([
+                    'admin_token' => 'Token admin tidak valid. Hubungi administrator untuk mendapatkan token yang benar.',
+                ])->withInput($request->except(['password', 'password_confirmation', 'admin_token']));
+            }
 
             $user = User::create([
                 'name' => $request->name,
@@ -139,7 +150,7 @@ class AuthController extends Controller
 
             return redirect()
                 ->route('admin.dashboard')
-                ->with('success', 'Akun berhasil dibuat. Selamat datang!');
+                ->with('success', 'Akun admin berhasil dibuat. Selamat datang!');
         } catch (\Exception $e) {
             Log::error("Error saat registrasi: " . $e->getMessage(), [
                 'request' => request()->all(),
@@ -149,7 +160,7 @@ class AuthController extends Controller
             ]);
             return back()->withErrors([
                 'email' => 'Terjadi kesalahan saat registrasi.',
-            ])->withInput($request->except('password'));
+            ])->withInput($request->except(['password', 'password_confirmation', 'admin_token']));
         }
     }
 }
