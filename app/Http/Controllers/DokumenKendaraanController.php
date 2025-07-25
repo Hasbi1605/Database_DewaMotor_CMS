@@ -51,7 +51,7 @@ class DokumenKendaraanController extends Controller
         }
 
         // Kita akan memberikan paginator dan koleksi yang sudah ditransformasi
-        return view('dokumen-kendaraans.index', compact('dokumenKendaraans', 'kendaraans', 'kendaraans_page'));
+        return view('paneladmin.dokumen-kendaraan.index', compact('dokumenKendaraans', 'kendaraans', 'kendaraans_page'));
     }
 
     /**
@@ -63,7 +63,7 @@ class DokumenKendaraanController extends Controller
         $selectedKendaraanId = $request->kendaraan_id;
         $selectedJenisDokumen = $request->jenis_dokumen;
 
-        return view('dokumen-kendaraans.create', compact('kendaraans', 'selectedKendaraanId', 'selectedJenisDokumen'));
+        return view('paneladmin.dokumen-kendaraan.create', compact('kendaraans', 'selectedKendaraanId', 'selectedJenisDokumen'));
     }
 
     /**
@@ -112,7 +112,7 @@ class DokumenKendaraanController extends Controller
             Log::info('Menampilkan form edit untuk dokumen kendaraan dengan ID: ' . $id);
             $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
             $kendaraans = Kendaraan::all();
-            return view('dokumen-kendaraans.edit', compact('dokumenKendaraan', 'kendaraans'));
+            return view('paneladmin.dokumen-kendaraan.edit', compact('dokumenKendaraan', 'kendaraans'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             Log::error("Error menampilkan form edit dokumen kendaraan: " . $e->getMessage(), [
                 'request' => request()->all(),

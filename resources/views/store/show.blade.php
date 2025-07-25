@@ -164,10 +164,53 @@
                                 </h5>
                                 @if($kendaraan->dokumen && $kendaraan->dokumen->count() > 0)
                                     <div class="document-list">
-                                        @foreach($kendaraan->dokumen as $dokumen)
-                                            <div class="d-flex align-items-center border-bottom py-2">
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                <span>{{ $dokumen->jenis_dokumen }}</span>
+                                        @foreach($kendaraan->dokumen as $index => $dokumen)
+                                            <div class="document-item border-bottom py-2">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                                        <span>{{ $dokumen->jenis_dokumen }}</span>
+                                                    </div>
+                                                    @if($dokumen->file_path)
+                                                        <button class="btn btn-sm btn-outline-primary document-toggle-btn" 
+                                                                data-document-id="{{ $dokumen->id }}"
+                                                                data-document-type="{{ $dokumen->jenis_dokumen }}"
+                                                                data-document-path="{{ asset('storage/' . $dokumen->file_path) }}"
+                                                                title="Lihat dokumen {{ $dokumen->jenis_dokumen }}">
+                                                            <i class="fas fa-eye me-1"></i>
+                                                            <span class="toggle-text">Lihat</span>
+                                                        </button>
+                                                    @else
+                                                        <span class="text-muted small">
+                                                            <i class="fas fa-times-circle me-1"></i>
+                                                            Tidak tersedia
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                
+                                                <!-- Document Preview Container (Hidden by default) -->
+                                                @if($dokumen->file_path)
+                                                <div class="document-preview mt-2" id="preview-{{ $dokumen->id }}" style="display: none;">
+                                                    <div class="document-image-container" 
+                                                         onclick="showDocumentModal('{{ asset('storage/' . $dokumen->file_path) }}', '{{ $dokumen->jenis_dokumen }}', '{{ $dokumen->nomor_dokumen }}')">
+                                                        <img src="{{ asset('storage/' . $dokumen->file_path) }}" 
+                                                             alt="Dokumen {{ $dokumen->jenis_dokumen }}"
+                                                             class="document-preview-image img-fluid">
+                                                        <div class="document-overlay">
+                                                            <i class="fas fa-search-plus"></i>
+                                                            <small>Klik untuk memperbesar</small>
+                                                        </div>
+                                                    </div>
+                                                    @if($dokumen->nomor_dokumen)
+                                                    <div class="document-info mt-2">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-hashtag me-1"></i>
+                                                            {{ $dokumen->nomor_dokumen }}
+                                                        </small>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                                @endif
                                             </div>
                                         @endforeach
                                     </div>
@@ -354,6 +397,39 @@
     </div>
 </div>
 
+<!-- Modal Dokumen -->
+<div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="documentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="documentModalLabel">
+                    <i class="fas fa-file-alt me-2"></i>
+                    <span id="documentTitle">Dokumen</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <div class="document-modal-container">
+                    <img id="documentModalImage" 
+                         src="" 
+                         alt="Document Image" 
+                         class="img-fluid rounded shadow-sm"
+                         style="max-height: 70vh; object-fit: contain; cursor: zoom-in;"
+                         onclick="toggleDocumentZoom(this)">
+                </div>
+                <div class="document-modal-info mt-3">
+                    <p class="text-muted mb-0" id="documentNumber"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- CSS untuk Styling -->
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/css/pages/store/show.css') }}">
@@ -374,8 +450,102 @@ function changeCarouselSlide(index) {
     });
 }
 
+// Fungsi untuk menampilkan gambar fullscreen
+function showFullscreenImage(src, title) {
+    var modal = new bootstrap.Modal(document.getElementById('fullscreenModal'));
+    document.getElementById('fullscreenImage').src = src;
+    document.getElementById('fullscreenModalLabel').textContent = title;
+    modal.show();
+}
+
+// Fungsi untuk menampilkan modal dokumen
+function showDocumentModal(src, type, number) {
+    try {
+        console.log('showDocumentModal called with:', { src, type, number }); // Debug log
+        
+        var modalElement = document.getElementById('documentModal');
+        if (!modalElement) {
+            console.error('Document modal element not found');
+            return;
+        }
+        
+        var documentTitle = document.getElementById('documentTitle');
+        var documentImage = document.getElementById('documentModalImage');
+        var documentNumber = document.getElementById('documentNumber');
+        
+        if (!documentTitle || !documentImage || !documentNumber) {
+            console.error('Modal elements not found');
+            return;
+        }
+        
+        // Set modal content
+        documentTitle.textContent = type;
+        documentImage.src = src;
+        documentImage.alt = 'Dokumen ' + type;
+        documentNumber.textContent = number ? 'Nomor: ' + number : '';
+        
+        // Show modal with Bootstrap or fallback
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        } else {
+            // Fallback: show modal manually
+            modalElement.style.display = 'block';
+            modalElement.classList.add('show');
+            document.body.classList.add('modal-open');
+            
+            // Add backdrop
+            var backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            backdrop.onclick = function() {
+                hideDocumentModal();
+            };
+            document.body.appendChild(backdrop);
+        }
+        
+        console.log('Document modal shown successfully');
+    } catch (error) {
+        console.error('Error showing document modal:', error);
+        alert('Terjadi kesalahan saat membuka dokumen. Silakan coba lagi.');
+    }
+}
+
+// Fungsi untuk menyembunyikan modal dokumen (fallback)
+function hideDocumentModal() {
+    var modalElement = document.getElementById('documentModal');
+    var backdrop = document.querySelector('.modal-backdrop');
+    
+    if (modalElement) {
+        modalElement.style.display = 'none';
+        modalElement.classList.remove('show');
+    }
+    
+    if (backdrop) {
+        backdrop.remove();
+    }
+    
+    // Force remove modal-open class and restore scrolling
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    document.documentElement.style.overflow = '';
+    
+    // Additional cleanup for any remaining modal classes
+    var allBackdrops = document.querySelectorAll('.modal-backdrop');
+    allBackdrops.forEach(function(el) {
+        el.remove();
+    });
+}
+
+// Fungsi untuk zoom dokumen di modal
+function toggleDocumentZoom(img) {
+    img.classList.toggle('zoomed');
+}
+
 // Event listener untuk interaksi carousel dan modal
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing document functionality...');
+    
     var carousel = document.getElementById('motorCarousel');
     if (carousel) {
         // Sinkronisasi thumbnail dengan carousel
@@ -387,23 +557,166 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Keyboard navigation untuk modal fullscreen
+    // Document toggle functionality
+    document.querySelectorAll('.document-toggle-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var documentId = this.getAttribute('data-document-id');
+            var preview = document.getElementById('preview-' + documentId);
+            var toggleText = this.querySelector('.toggle-text');
+            var icon = this.querySelector('i');
+            
+            if (preview.style.display === 'none' || preview.style.display === '') {
+                // Show preview
+                preview.style.display = 'block';
+                toggleText.textContent = 'Sembunyikan';
+                icon.className = 'fas fa-eye-slash me-1';
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('btn-outline-secondary');
+                
+                // Animate in
+                preview.style.opacity = '0';
+                preview.style.transform = 'translateY(-10px)';
+                setTimeout(function() {
+                    preview.style.transition = 'all 0.3s ease';
+                    preview.style.opacity = '1';
+                    preview.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                // Hide preview
+                preview.style.transition = 'all 0.3s ease';
+                preview.style.opacity = '0';
+                preview.style.transform = 'translateY(-10px)';
+                setTimeout(function() {
+                    preview.style.display = 'none';
+                    toggleText.textContent = 'Lihat';
+                    icon.className = 'fas fa-eye me-1';
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-outline-primary');
+                }, 300);
+            }
+        });
+    });
+    
+    // Additional event listeners for document image containers
+    document.querySelectorAll('.document-image-container').forEach(function(container, index) {
+        console.log('Adding click listener to document container', index);
+        
+        container.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('Document container clicked!', e.target);
+            
+            var img = this.querySelector('.document-preview-image');
+            if (img) {
+                var src = img.src;
+                var alt = img.alt;
+                var documentType = alt.replace('Dokumen ', '');
+                
+                // Try to get document number from the document info
+                var documentInfo = this.parentElement.querySelector('.document-info small');
+                var documentNumber = documentInfo ? documentInfo.textContent.replace('# ', '').replace(/\s+/g, ' ').trim() : '';
+                
+                console.log('Document container clicked:', { src, documentType, documentNumber });
+                showDocumentModal(src, documentType, documentNumber);
+            } else {
+                console.error('No image found in container');
+            }
+        });
+        
+        // Add pointer cursor to indicate clickable
+        container.style.cursor = 'pointer';
+        
+        // Also add click listener to the image as backup
+        var img = container.querySelector('.document-preview-image');
+        if (img) {
+            img.style.pointerEvents = 'auto'; // Re-enable pointer events on image
+            img.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Image clicked directly');
+                container.click(); // Trigger container click
+            });
+        }
+    });
+    
+    console.log('Found', document.querySelectorAll('.document-image-container').length, 'document containers');
+    
+    // Keyboard navigation untuk modal
     document.addEventListener('keydown', function(event) {
-        var modal = document.getElementById('fullscreenModal');
-        if (modal && modal.classList.contains('show')) {
-            if (event.key === 'Escape') {
-                bootstrap.Modal.getInstance(modal).hide();
+        var fullscreenModal = document.getElementById('fullscreenModal');
+        var documentModal = document.getElementById('documentModal');
+        
+        if (event.key === 'Escape') {
+            if (fullscreenModal && fullscreenModal.classList.contains('show')) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    bootstrap.Modal.getInstance(fullscreenModal).hide();
+                } else {
+                    fullscreenModal.style.display = 'none';
+                    fullscreenModal.classList.remove('show');
+                    // Restore scroll for fullscreen modal
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                    document.documentElement.style.overflow = '';
+                    document.body.classList.remove('modal-open');
+                }
+            }
+            if (documentModal && documentModal.classList.contains('show')) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    bootstrap.Modal.getInstance(documentModal).hide();
+                } else {
+                    hideDocumentModal();
+                }
+                console.log('Document modal closed via ESC key');
             }
         }
     });
+    
+    // Add click listeners to modal close buttons
+    var documentModalCloseButtons = document.querySelectorAll('#documentModal .btn-close, #documentModal .btn-secondary');
+    documentModalCloseButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            hideDocumentModal();
+        });
+    });
+    
+    // Add Bootstrap modal event listeners for proper cleanup
+    var documentModal = document.getElementById('documentModal');
+    if (documentModal) {
+        documentModal.addEventListener('hidden.bs.modal', function() {
+            // Ensure scroll is restored when modal is closed via Bootstrap
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            document.documentElement.style.overflow = '';
+            document.body.classList.remove('modal-open');
+            
+            // Clean up any remaining backdrops
+            var allBackdrops = document.querySelectorAll('.modal-backdrop');
+            allBackdrops.forEach(function(el) {
+                el.remove();
+            });
+            
+            console.log('Document modal closed, scroll restored');
+        });
+        
+        documentModal.addEventListener('hide.bs.modal', function() {
+            console.log('Document modal hiding...');
+        });
+        
+        // Add click listener to modal backdrop
+        documentModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                // Clicked on modal backdrop
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    bootstrap.Modal.getInstance(this).hide();
+                } else {
+                    hideDocumentModal();
+                }
+            }
+        });
+    }
+    
+    console.log('Document functionality initialized successfully!');
 });
-
-// Fungsi untuk menampilkan gambar fullscreen
-function showFullscreenImage(src, title) {
-    var modal = new bootstrap.Modal(document.getElementById('fullscreenModal'));
-    document.getElementById('fullscreenImage').src = src;
-    document.getElementById('fullscreenModalLabel').textContent = title;
-    modal.show();
-}
 </script>
 @endpush

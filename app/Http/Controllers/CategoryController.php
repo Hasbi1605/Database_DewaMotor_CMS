@@ -20,7 +20,7 @@ class CategoryController extends Controller
             'condition' => Category::getByType('condition')
         ];
 
-        return view('categories.index', compact('categories'));
+        return view('paneladmin.kelola-kategori.index', compact('categories'));
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoryController extends Controller
     public function create()
     {
         $types = ['class', 'brand', 'document', 'condition'];
-        return view('categories.create', compact('types'));
+        return view('paneladmin.kelola-kategori.create', compact('types'));
     }
 
     /**
@@ -57,7 +57,7 @@ class CategoryController extends Controller
         try {
             Log::info('Menampilkan kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
-            return view('categories.show', compact('category'));
+            return view('paneladmin.kelola-kategori.show', compact('category'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             Log::error("Error menampilkan kategori: " . $e->getMessage(), [
                 'request' => request()->all(),
@@ -79,7 +79,7 @@ class CategoryController extends Controller
             Log::info('Menampilkan form edit untuk kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
             $types = ['class', 'brand', 'document', 'condition'];
-            return view('categories.edit', compact('category', 'types'));
+            return view('paneladmin.kelola-kategori.edit', compact('category', 'types'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             Log::error("Error menampilkan form edit: " . $e->getMessage(), [
                 'request' => request()->all(),

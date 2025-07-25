@@ -14,7 +14,7 @@ class AdminTokenController extends Controller
      */
     public function showTokenInfo()
     {
-        return view('admin.token-info');
+        return view('paneladmin.token-admin.token-info');
     }
 
     /**

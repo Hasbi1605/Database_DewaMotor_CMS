@@ -119,6 +119,32 @@ body {
     overflow: hidden;
 }
 
+.motor-image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.motor-image-link:hover {
+    text-decoration: none;
+}
+
+.motor-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.motor-image-link:hover .motor-preview-image {
+    transform: scale(1.05);
+}
+
 .motor-image img {
     width: 100%;
     height: 100%;
@@ -133,6 +159,12 @@ body {
     justify-content: center;
     color: var(--text-light);
     font-size: 3rem;
+    transition: all 0.3s ease;
+}
+
+.motor-image-link:hover .default-image {
+    color: var(--primary-color);
+    transform: scale(1.05);
 }
 
 .motor-image .photo-count {

@@ -58,7 +58,7 @@ class HomeController extends Controller
                 $salesByClass[$category->name] = $soldVehicles;
             }
 
-            return view('home', compact('kendaraans', 'totalKendaraan', 'totalTerjual', 'totalProfit', 'kendaraanTerjual', 'kendaraanTerjualAll', 'categories', 'salesByClass'));
+            return view('paneladmin.dashboard.index', compact('kendaraans', 'totalKendaraan', 'totalTerjual', 'totalProfit', 'kendaraanTerjual', 'kendaraanTerjualAll', 'categories', 'salesByClass'));
         } catch (\Exception $e) {
             Log::error("Error saat mengakses halaman home: " . $e->getMessage(), [
                 'request' => request()->all(),

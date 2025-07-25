@@ -1,53 +1,58 @@
 @extends('layouts.app')
 
 @section('title', 'Dokumen Kendaraan')
+@section('page-title', 'Dokumen Kendaraan')
 
 @section('content')
-<!-- Card Container untuk Daftar Dokumen Kendaraan -->
-<div class="card">
-    <!-- Header Card dengan Judul dan Tombol Tambah -->
+<!-- Header Section -->
+<div class="card fade-in">
     <div class="card-header">
-        <div class="d-flex align-items-center">
-            <h4 class="card-title mb-0">Daftar Dokumen Kendaraan</h4>
-            <a href="{{ route('dokumen-kendaraans.create') }}" class="btn btn-primary btn-round ms-auto">
-                <i class="fa fa-plus"></i>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="card-title mb-0">Dokumen Kendaraan</h4>
+                <p class="text-muted mb-0">Kelola dokumen-dokumen penting untuk setiap kendaraan</p>
+            </div>
+            <a href="{{ route('dokumen-kendaraans.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>
                 Tambah Dokumen
             </a>
         </div>
     </div>
-        <div class="card-body">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+</div>
 
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+<!-- Alert Messages -->
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
-        <div class="row">
-    
-    <!-- Body Card berisi Form dan Tabel -->
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+<!-- Filter Section -->
+<div class="card">
     <div class="card-body">
-        <!-- Form Pencarian dan Filter -->
-        <form action="{{ route('dokumen-kendaraans.index') }}" method="GET" class="mb-4">
-            <div class="row g-3">
-                <!-- Filter Kendaraan -->
-                <div class="col-md-4">
-                    <select name="kendaraan_id" class="form-select">
-                        <option value="">Semua Kendaraan</option>
-                        @foreach($kendaraans as $kendaraan)
-                            <option value="{{ $kendaraan->id }}" {{ request('kendaraan_id') == $kendaraan->id ? 'selected' : '' }}>
-                                {{ $kendaraan->merek }} {{ $kendaraan->model }} - {{ $kendaraan->nomor_polisi }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+        <form action="{{ route('dokumen-kendaraans.index') }}" method="GET" class="row g-3">
+            <div class="col-md-8">
+                <label class="form-label fw-semibold">
+                    <i class="fas fa-motorcycle me-1"></i>
+                    Filter Kendaraan
+                </label>
+                <select name="kendaraan_id" class="form-select">
+                    <option value="">Semua Kendaraan</option>
+                    @foreach($kendaraans as $kendaraan)
+                        <option value="{{ $kendaraan->id }}" {{ request('kendaraan_id') == $kendaraan->id ? 'selected' : '' }}>
+                            {{ $kendaraan->merek }} {{ $kendaraan->model }} - {{ $kendaraan->nomor_polisi }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
                 
                 <!-- Input Pencarian -->
                 <div class="col-md-3">

@@ -65,13 +65,13 @@ class KendaraanController extends Controller
             return Category::all();
         });
 
-        return view('kendaraans.index', compact('kendaraans', 'totalProfit', 'totalTerjual', 'categories'));
+        return view('paneladmin.kelola-kendaraan.index', compact('kendaraans', 'totalProfit', 'totalTerjual', 'categories'));
     }
 
     public function create()
     {
         $categories = Category::all()->groupBy('type');
-        return view('kendaraans.create', compact('categories'));
+        return view('paneladmin.kelola-kendaraan.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -140,7 +140,7 @@ class KendaraanController extends Controller
             $existingDocs = $kendaraan->dokumen->pluck('jenis_dokumen')->toArray();
             $missingDocs = array_diff($requiredDocs, $existingDocs);
 
-            return view('kendaraans.show', compact('kendaraan', 'missingDocs', 'requiredDocs'));
+            return view('paneladmin.kelola-kendaraan.show', compact('kendaraan', 'missingDocs', 'requiredDocs'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             Log::error("Error menampilkan kendaraan: " . $e->getMessage(), [
                 'request' => request()->all(),
@@ -158,7 +158,7 @@ class KendaraanController extends Controller
             Log::info('Menampilkan form edit untuk kendaraan dengan ID: ' . $id);
             $kendaraan = Kendaraan::with('categories')->findOrFail($id);
             $categories = Category::all()->groupBy('type');
-            return view('kendaraans.edit', compact('kendaraan', 'categories'));
+            return view('paneladmin.kelola-kendaraan.edit', compact('kendaraan', 'categories'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             Log::error("Error menampilkan form edit kendaraan: " . $e->getMessage(), [
                 'request' => request()->all(),

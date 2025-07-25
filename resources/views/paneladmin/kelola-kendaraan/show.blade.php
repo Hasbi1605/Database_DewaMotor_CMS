@@ -1,53 +1,62 @@
 @extends('layouts.app')
 
 @section('title', 'Detail Kendaraan')
+@section('page-title', 'Detail Kendaraan')
 
 @section('content')
-<!-- Card Container untuk Detail Kendaraan -->
-<div class="card">
-    <!-- Header Card dengan Status dan Tombol Aksi -->
+<!-- Header Section -->
+<div class="card fade-in">
     <div class="card-header">
-        <div class="d-flex align-items-center">
-            <h4 class="card-title mb-0">
-                Detail Kendaraan
-                <!-- Badge Status Kendaraan -->
-                <span class="badge bg-{{ $kendaraan->status === 'tersedia' ? 'success' : 'danger' }}">
-                    {{ ucfirst($kendaraan->status) }}
-                </span>
-            </h4>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="card-title mb-2">
+                    Detail Kendaraan
+                    <span class="badge bg-{{ $kendaraan->status === 'tersedia' ? 'success' : 'danger' }}">
+                        <i class="fas fa-{{ $kendaraan->status === 'tersedia' ? 'check' : 'times' }} me-1"></i>
+                        {{ ucfirst($kendaraan->status) }}
+                    </span>
+                </h4>
+                <p class="text-muted mb-0">{{ $kendaraan->merek }} {{ $kendaraan->model }} - {{ $kendaraan->nomor_polisi }}</p>
+            </div>
             
-            <!-- Tombol Aksi di Kanan -->
-            <div class="ms-auto">
-                <!-- Tombol Toggle Status -->
+            <div class="d-flex gap-2">
                 @if($kendaraan->status == 'tersedia')
-                    <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline me-2">
+                    <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline">
                         @csrf
                         <input type="hidden" name="status" value="terjual">
-                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Apakah Anda yakin ingin menandai kendaraan ini sebagai terjual?')" title="Tandai sebagai Terjual">
-                            <i class="fa fa-check"></i>
+                        <button type="submit" class="btn btn-success" 
+                                onclick="return confirm('Tandai sebagai terjual?')" 
+                                title="Tandai sebagai Terjual">
+                            <i class="fas fa-shopping-cart me-1"></i>
                             Tandai Terjual
                         </button>
                     </form>
-                @elseif($kendaraan->status == 'terjual')
-                    <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline me-2">
+                @else
+                    <form action="{{ route('kendaraans.updateStatus', $kendaraan->id) }}" method="POST" class="d-inline">
                         @csrf
                         <input type="hidden" name="status" value="tersedia">
-                        <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Apakah Anda yakin ingin mengembalikan status kendaraan ini ke tersedia?')" title="Kembalikan ke Tersedia">
-                            <i class="fa fa-undo"></i>
-                            Kembalikan ke Tersedia
+                        <button type="submit" class="btn btn-warning" 
+                                onclick="return confirm('Kembalikan ke tersedia?')" 
+                                title="Kembalikan ke Tersedia">
+                            <i class="fas fa-undo me-1"></i>
+                            Kembalikan
                         </button>
                     </form>
                 @endif
                 
-                <!-- Tombol Edit -->
-                <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-sm btn-info">
-                    <i class="fa fa-edit"></i>
-                    Edit Data
+                <a href="{{ route('kendaraans.edit', $kendaraan->id) }}" class="btn btn-info">
+                    <i class="fas fa-edit me-1"></i>
+                    Edit
                 </a>
                 
-                <!-- Tombol Kembali -->
-                <a href="{{ route('kendaraans.index') }}" class="btn btn-danger btn-sm">
-                    <i class="fa fa-arrow-left"></i>
+                <a href="{{ route('kendaraans.index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Kembali
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
                     Kembali
                 </a>
             </div>

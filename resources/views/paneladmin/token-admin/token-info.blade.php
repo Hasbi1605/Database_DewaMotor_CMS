@@ -1,55 +1,66 @@
 @extends('layouts.app')
 
-@section('title', 'Informasi Token Admin')
+@section('title', 'Token Admin')
+@section('page-title', 'Token Admin')
 
 @section('content')
-<!-- Card Container untuk Informasi Token Admin -->
-<div class="card">
-    <!-- Header Card dengan Tombol Kembali -->
+<!-- Header Section -->
+<div class="card fade-in">
     <div class="card-header">
-        <div class="d-flex align-items-center">
-            <h4 class="card-title mb-0">
-                <i class="fas fa-key me-2"></i>
-                Informasi Token Registrasi Admin
-            </h4>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-danger btn-sm ms-auto">
-                <i class="fas fa-arrow-left"></i>
-                Kembali ke Dashboard
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-key me-2"></i>
+                    Token Registrasi Admin
+                </h4>
+                <p class="text-muted mb-0">Kelola token untuk registrasi admin baru</p>
+            </div>
+            <a href="/" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-1"></i>
+                Kembali
             </a>
         </div>
     </div>
-    
-    <!-- Body Card berisi Informasi Token -->
-    <div class="card-body">
-        <!-- Alert Keamanan -->
-        <div class="alert alert-warning">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <strong>Keamanan:</strong> Token ini bersifat rahasia dan hanya boleh dibagikan kepada orang yang berwenang untuk menjadi admin.
+</div>
+
+<!-- Security Alert -->
+<div class="alert alert-warning">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-exclamation-triangle me-3 fa-2x"></i>
+        <div>
+            <h6 class="mb-1">Penting untuk Keamanan!</h6>
+            <p class="mb-0">Token ini bersifat rahasia dan hanya boleh dibagikan kepada orang yang berwenang untuk menjadi admin.</p>
         </div>
-        
-        <!-- Section 1: Token Saat Ini -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h5 class="mb-3">
-                    <i class="fas fa-shield-alt me-2"></i>
-                    Token Saat Ini
-                </h5>
+    </div>
+</div>
+
+<!-- Current Token Section -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="fas fa-shield-alt me-2"></i>
+            Token Aktif
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <label class="form-label fw-semibold">Token Admin Saat Ini</label>
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control font-monospace" 
+                           value="{{ config('app.admin_registration_token') }}" 
+                           id="adminToken" 
+                           readonly>
+                    <button class="btn btn-outline-primary" 
+                            type="button" 
+                            onclick="copyToken()"
+                            title="Copy Token">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <small class="text-muted">Token ini digunakan untuk registrasi admin baru</small>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="form-label">Token Admin Aktif</label>
-                    <div class="input-group">
-                        <input type="text" 
-                               class="form-control" 
-                               value="{{ config('app.admin_registration_token') }}" 
-                               id="adminToken" 
-                               readonly>
-                        <button class="btn btn-outline-secondary" 
-                                type="button" 
-                                onclick="copyToken()"
-                                title="Copy Token">
-                            <i class="fas fa-copy"></i>
-                        </button>
                     </div>
                     <small class="form-text text-muted">Klik tombol copy untuk menyalin token</small>
                 </div>

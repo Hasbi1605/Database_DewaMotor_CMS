@@ -228,10 +228,12 @@
                             <!-- Gambar Motor -->
                             <div class="motor-image">
                                 @if($kendaraan->photos && count($kendaraan->photos) > 0)
-                                    <!-- Gambar Utama Motor -->
-                                    <img src="{{ asset('storage/' . $kendaraan->photos[0]) }}" 
-                                         alt="{{ $kendaraan->merek }} {{ $kendaraan->model }}" 
-                                         class="img-fluid">
+                                    <!-- Gambar Utama Motor (Clickable) -->
+                                    <a href="{{ route('store.show', $kendaraan->id) }}" class="motor-image-link">
+                                        <img src="{{ asset('storage/' . $kendaraan->photos[0]) }}" 
+                                             alt="{{ $kendaraan->merek }} {{ $kendaraan->model }}" 
+                                             class="img-fluid motor-preview-image">
+                                    </a>
                                     
                                     <!-- Badge Jumlah Foto -->
                                     @if(count($kendaraan->photos) > 1)
@@ -241,10 +243,12 @@
                                         </div>
                                     @endif
                                 @else
-                                    <!-- Placeholder jika tidak ada foto -->
-                                    <div class="default-image">
-                                        <i class="fas fa-motorcycle"></i>
-                                    </div>
+                                    <!-- Placeholder jika tidak ada foto (Clickable) -->
+                                    <a href="{{ route('store.show', $kendaraan->id) }}" class="motor-image-link">
+                                        <div class="default-image">
+                                            <i class="fas fa-motorcycle"></i>
+                                        </div>
+                                    </a>
                                 @endif
                             </div>
 
@@ -384,6 +388,11 @@
 </section>
 @endsection
 
+<!-- CSS untuk Styling -->
+@push('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/pages/store/store.css') }}">
+@endpush
+
 <!-- JavaScript untuk Interaksi -->
 @push('scripts')
 <script>
@@ -395,6 +404,17 @@
                 document.getElementById('filterForm').submit();
             });
         }
+        
+        // Tambahkan smooth scrolling untuk link
+        document.querySelectorAll('.motor-image-link').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                // Add a subtle loading effect
+                this.style.opacity = '0.8';
+                setTimeout(() => {
+                    this.style.opacity = '1';
+                }, 200);
+            });
+        });
     });
 </script>
 @endpush
