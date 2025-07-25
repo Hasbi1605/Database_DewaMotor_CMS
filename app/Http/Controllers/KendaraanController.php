@@ -57,9 +57,13 @@ class KendaraanController extends Controller
         }
 
         $kendaraans = $query->paginate(10);
+
+        // Optimized queries - Use raw SQL for simple counts and calculations
         $totalProfit = Kendaraan::getTotalProfit();
         $totalTerjual = Kendaraan::where('status', 'terjual')->count();
-        $categories = Category::all();
+        $categories = cache()->remember('categories_all', 3600, function () {
+            return Category::all();
+        });
 
         return view('kendaraans.index', compact('kendaraans', 'totalProfit', 'totalTerjual', 'categories'));
     }

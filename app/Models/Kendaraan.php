@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Kendaraan extends Model
 {
@@ -25,9 +26,13 @@ class Kendaraan extends Model
     ];
 
     protected $casts = [
-        'photos' => 'array'
+        'photos' => 'array',
+        'harga_modal' => 'decimal:2',
+        'harga_jual' => 'decimal:2',
+        'tahun_pembuatan' => 'integer',
     ];
 
+    // Eloquent Relationships
     public function dokumen()
     {
         return $this->hasMany(DokumenKendaraan::class);
@@ -38,23 +43,90 @@ class Kendaraan extends Model
         return $this->belongsToMany(Category::class, 'kendaraan_category');
     }
 
+    // Query Scopes for better performance
+    public function scopeAvailable(Builder $query): void
+    {
+        $query->where('status', 'tersedia');
+    }
+
+    public function scopeSold(Builder $query): void
+    {
+        $query->where('status', 'terjual');
+    }
+
+    public function scopeByBrand(Builder $query, string $brand): void
+    {
+        $query->where('merek', $brand);
+    }
+
+    public function scopeByYear(Builder $query, int $year): void
+    {
+        $query->where('tahun_pembuatan', $year);
+    }
+
+    public function scopePriceRange(Builder $query, ?float $min = null, ?float $max = null): void
+    {
+        if ($min !== null) {
+            $query->where('harga_jual', '>=', $min);
+        }
+        if ($max !== null) {
+            $query->where('harga_jual', '<=', $max);
+        }
+    }
+
+    public function scopeWithMinimalData(Builder $query): void
+    {
+        $query->select([
+            'id',
+            'merek',
+            'model',
+            'tahun_pembuatan',
+            'harga_jual',
+            'status',
+            'photos',
+            'created_at'
+        ]);
+    }
+
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        $query->where(function ($q) use ($search) {
+            $q->where('nomor_rangka', 'like', "%{$search}%")
+                ->orWhere('nomor_mesin', 'like', "%{$search}%")
+                ->orWhere('nomor_polisi', 'like', "%{$search}%")
+                ->orWhere('merek', 'like', "%{$search}%")
+                ->orWhere('model', 'like', "%{$search}%");
+        });
+    }
+
+    // Computed attributes
     public function getProfit()
     {
         return $this->harga_jual - $this->harga_modal;
     }
 
+    // Optimized static methods
     public static function getTotalProfit()
     {
         return self::where('status', 'terjual')
-            ->get()
-            ->sum(function ($kendaraan) {
-                return $kendaraan->getProfit();
-            });
+            ->selectRaw('SUM(harga_jual - harga_modal) as total_profit')
+            ->value('total_profit') ?? 0;
     }
 
     public static function getKendaraanTerjual()
     {
         return self::where('status', 'terjual')->get();
+    }
+
+    // Optimized static counts
+    public static function getTotalTerjual(): int
+    {
+        return self::where('status', 'terjual')->count();
+    }
+
+    public static function getTotalTersedia(): int
+    {
+        return self::where('status', 'tersedia')->count();
     }
 
     /**

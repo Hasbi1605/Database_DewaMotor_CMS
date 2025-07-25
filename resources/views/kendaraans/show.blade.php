@@ -6,7 +6,7 @@
 <!-- Card Container untuk Detail Kendaraan -->
 <div class="card">
     <!-- Header Card dengan Status dan Tombol Aksi -->
-    <div class="">
+    <div class="card-header">
         <div class="d-flex align-items-center">
             <h4 class="card-title mb-0">
                 Detail Kendaraan

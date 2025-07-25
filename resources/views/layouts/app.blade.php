@@ -20,7 +20,7 @@
 <body>
     <div class="wrapper">
         <!-- Sidebar -->
-        <div class="sidebar" data-background-color="dark">
+        <div class="sidebar" id="sidebar" data-background-color="dark">
             <div class="sidebar-wrapper">
                 <div class="sidebar-header text-center">
                     <div class="header-text">
@@ -30,6 +30,10 @@
                         </div>
                         <small style="color: rgba(255, 255, 255, 0.7); font-size: 12px;">database management</small>
                     </div>
+                    <!-- Sidebar Toggle Button -->
+                    <button id="sidebarToggle" class="sidebar-toggle-btn" title="Pin Sidebar">
+                        <i class="fas fa-thumbtack"></i>
+                    </button>
                 </div>
                 <!-- Divider -->
                 <hr class="sidebar-divider">
@@ -95,6 +99,63 @@
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/kaiadmin.js') }}"></script>
     <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
+    
+    <!-- Sidebar Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainPanel = document.querySelector('.main-panel');
+            
+            // Check localStorage for saved state
+            const sidebarState = localStorage.getItem('sidebarPinned');
+            const isPinned = sidebarState === 'true';
+            
+            // Apply saved state
+            if (isPinned) {
+                sidebar.classList.add('pinned');
+                sidebarToggle.classList.add('active');
+                sidebarToggle.innerHTML = '<i class="fas fa-thumbtack" style="transform: rotate(45deg);"></i>';
+                sidebarToggle.title = 'Unpin Sidebar';
+            }
+            
+            // Toggle functionality
+            sidebarToggle.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent event bubbling
+                const isCurrentlyPinned = sidebar.classList.contains('pinned');
+                
+                if (isCurrentlyPinned) {
+                    // Unpin sidebar
+                    sidebar.classList.remove('pinned');
+                    sidebarToggle.classList.remove('active');
+                    sidebarToggle.innerHTML = '<i class="fas fa-thumbtack"></i>';
+                    sidebarToggle.title = 'Pin Sidebar';
+                    localStorage.setItem('sidebarPinned', 'false');
+                } else {
+                    // Pin sidebar
+                    sidebar.classList.add('pinned');
+                    sidebarToggle.classList.add('active');
+                    sidebarToggle.innerHTML = '<i class="fas fa-thumbtack" style="transform: rotate(45deg);"></i>';
+                    sidebarToggle.title = 'Unpin Sidebar';
+                    localStorage.setItem('sidebarPinned', 'true');
+                }
+            });
+            
+            // Optional: Close sidebar when clicking outside (only when pinned on mobile)
+            document.addEventListener('click', function(event) {
+                if (sidebar.classList.contains('pinned') && 
+                    !sidebar.contains(event.target) && 
+                    window.innerWidth < 768) { // Only on mobile devices
+                    sidebar.classList.remove('pinned');
+                    sidebarToggle.classList.remove('active');
+                    sidebarToggle.innerHTML = '<i class="fas fa-thumbtack"></i>';
+                    sidebarToggle.title = 'Pin Sidebar';
+                    localStorage.setItem('sidebarPinned', 'false');
+                }
+            });
+        });
+    </script>
+    
     @stack('scripts')
 </body>
 </html>

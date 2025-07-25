@@ -3,6 +3,26 @@
 @section('title', 'Edit Kendaraan')
 
 @section('content')
+<style>
+.price-input {
+    text-align: left;
+}
+.price-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+.price-input.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+.price-input.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+</style>
+
 <!-- Card Container untuk Form Edit Kendaraan -->
 <div class="card">
     <!-- Header Card dengan Status dan Tombol Kembali -->
@@ -122,7 +142,8 @@
                         <label for="harga_modal" class="form-label">Harga Modal</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fa fa-money-bill"></i></span>
-                            <input type="number" class="form-control" id="harga_modal" name="harga_modal" value="{{ old('harga_modal', $kendaraan->harga_modal) }}" step="0.01" required>
+                            <input type="text" class="form-control price-input" id="harga_modal_display" value="{{ old('harga_modal', $kendaraan->harga_modal) ? number_format(old('harga_modal', $kendaraan->harga_modal), 0, ',', '.') : '' }}" placeholder="0" required>
+                            <input type="hidden" id="harga_modal" name="harga_modal" value="{{ old('harga_modal', $kendaraan->harga_modal) }}">
                         </div>
                     </div>
 
@@ -131,7 +152,8 @@
                         <label for="harga_jual" class="form-label">Harga Jual</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fa fa-tag"></i></span>
-                            <input type="number" class="form-control" id="harga_jual" name="harga_jual" value="{{ old('harga_jual', $kendaraan->harga_jual) }}" step="0.01" required>
+                            <input type="text" class="form-control price-input" id="harga_jual_display" value="{{ old('harga_jual', $kendaraan->harga_jual) ? number_format(old('harga_jual', $kendaraan->harga_jual), 0, ',', '.') : '' }}" placeholder="0" required>
+                            <input type="hidden" id="harga_jual" name="harga_jual" value="{{ old('harga_jual', $kendaraan->harga_jual) }}">
                         </div>
                     </div>
                 </div>
@@ -379,6 +401,139 @@ document.addEventListener('DOMContentLoaded', function() {
         const dt = new DataTransfer();
         selectedFiles.forEach(file => dt.items.add(file));
         photoInput.files = dt.files;
+    }
+
+    // Fungsi untuk format harga dengan titik pemisah ribuan
+    function formatPrice(value) {
+        // Hapus semua karakter non-digit
+        const numericValue = value.replace(/\D/g, '');
+        
+        // Format dengan titik sebagai pemisah ribuan
+        return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Fungsi untuk hapus format dan dapatkan nilai numerik
+    function getNumericValue(value) {
+        return value.replace(/\./g, '');
+    }
+
+    // Fungsi untuk validasi harga
+    function validatePrices() {
+        const hargaModal = parseInt(getNumericValue(hargaModalDisplay.value || '0'));
+        const hargaJual = parseInt(getNumericValue(hargaJualDisplay.value || '0'));
+        
+        if (hargaJual > 0 && hargaModal > 0 && hargaJual < hargaModal) {
+            return false;
+        }
+        return true;
+    }
+
+    // Fungsi untuk menampilkan peringatan
+    function showPriceWarning() {
+        // Hapus peringatan yang sudah ada
+        const existingWarning = document.getElementById('price-warning');
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+
+        // Buat peringatan baru
+        const warning = document.createElement('div');
+        warning.id = 'price-warning';
+        warning.className = 'alert alert-warning alert-dismissible fade show mt-2';
+        warning.innerHTML = `
+            <i class="fa fa-exclamation-triangle me-2"></i>
+            <strong>Peringatan:</strong> Harga jual tidak boleh lebih rendah dari harga modal!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Tambahkan setelah input harga jual
+        hargaJualDisplay.closest('.form-group').appendChild(warning);
+        
+        // Tambahkan class error ke input
+        hargaJualDisplay.classList.add('is-invalid');
+    }
+
+    // Fungsi untuk menghapus peringatan
+    function removePriceWarning() {
+        const warning = document.getElementById('price-warning');
+        if (warning) {
+            warning.remove();
+        }
+        hargaJualDisplay.classList.remove('is-invalid');
+    }
+
+    // Event listener untuk input harga modal
+    const hargaModalDisplay = document.getElementById('harga_modal_display');
+    const hargaModalHidden = document.getElementById('harga_modal');
+    
+    if (hargaModalDisplay && hargaModalHidden) {
+        hargaModalDisplay.addEventListener('input', function(e) {
+            const formatted = formatPrice(e.target.value);
+            e.target.value = formatted;
+            hargaModalHidden.value = getNumericValue(formatted);
+            
+            // Validasi ulang harga jika harga jual sudah diisi
+            if (hargaJualDisplay.value) {
+                if (validatePrices()) {
+                    removePriceWarning();
+                } else {
+                    showPriceWarning();
+                }
+            }
+        });
+
+        // Set nilai awal jika ada
+        if (hargaModalDisplay.value) {
+            hargaModalHidden.value = getNumericValue(hargaModalDisplay.value);
+        }
+    }
+
+    // Event listener untuk input harga jual
+    const hargaJualDisplay = document.getElementById('harga_jual_display');
+    const hargaJualHidden = document.getElementById('harga_jual');
+    
+    if (hargaJualDisplay && hargaJualHidden) {
+        hargaJualDisplay.addEventListener('input', function(e) {
+            const formatted = formatPrice(e.target.value);
+            e.target.value = formatted;
+            hargaJualHidden.value = getNumericValue(formatted);
+            
+            // Validasi harga
+            if (validatePrices()) {
+                removePriceWarning();
+            } else {
+                showPriceWarning();
+            }
+        });
+
+        // Set nilai awal jika ada
+        if (hargaJualDisplay.value) {
+            hargaJualHidden.value = getNumericValue(hargaJualDisplay.value);
+        }
+    }
+
+    // Validasi saat form akan disubmit
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (!validatePrices()) {
+            e.preventDefault();
+            showPriceWarning();
+            
+            // Scroll ke peringatan
+            document.getElementById('price-warning').scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            
+            return false;
+        }
+    });
+
+    // Validasi awal saat halaman dimuat
+    if (hargaModalDisplay && hargaJualDisplay && hargaModalDisplay.value && hargaJualDisplay.value) {
+        if (!validatePrices()) {
+            showPriceWarning();
+        }
     }
 });
 
