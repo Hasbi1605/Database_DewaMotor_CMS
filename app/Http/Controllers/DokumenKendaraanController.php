@@ -4,28 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\DokumenKendaraan;
 use App\Models\Kendaraan;
+use App\Services\DokumenKendaraanService;
+use App\Http\Requests\DokumenKendaraanRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 class DokumenKendaraanController extends Controller
 {
-    /**
-     * Menghapus file dari storage jika ada
-     */
-    private function deleteFileIfExists($filePath)
+    protected $dokumenKendaraanService;
+
+    public function __construct(DokumenKendaraanService $dokumenKendaraanService)
     {
-        if ($filePath && Storage::disk('public')->exists($filePath)) {
-            Storage::disk('public')->delete($filePath);
-            return true;
-        }
-        return false;
+        $this->dokumenKendaraanService = $dokumenKendaraanService;
     }
 
     public function index(Request $request)
     {
-        $kendaraans = Kendaraan::all();
-
+        $kendaraans = Kendaraan::select(['id', 'nomor_polisi', 'merek', 'model'])->get();
 
         $kendaraanQuery = Kendaraan::with(['dokumen' => function ($query) use ($request) {
             if ($request->has('search')) {
@@ -59,7 +55,7 @@ class DokumenKendaraanController extends Controller
      */
     public function create(Request $request)
     {
-        $kendaraans = Kendaraan::all();
+        $kendaraans = Kendaraan::select(['id', 'nomor_polisi', 'merek', 'model'])->get();
         $selectedKendaraanId = $request->kendaraan_id;
         $selectedJenisDokumen = $request->jenis_dokumen;
 
@@ -69,27 +65,18 @@ class DokumenKendaraanController extends Controller
     /**
      * Menyimpan resource yang baru dibuat ke storage.
      */
-    public function store(Request $request)
+    public function store(DokumenKendaraanRequest $request)
     {
-        $request->validate([
-            'kendaraan_id' => 'required|exists:kendaraans,id',
-            'jenis_dokumen' => 'required',
-            'nomor_dokumen' => 'required',
-            'tanggal_terbit' => 'required|date',
-            'tanggal_expired' => 'nullable|date|after:tanggal_terbit',
-            'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'keterangan' => 'nullable|string'
-        ]);
+        // Get validated data from Form Request
+        $validatedData = $request->validated();
 
-        $data = $request->except('file');
-
+        // Add file to validated data if exists
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $path = $file->store('dokumen-kendaraan', 'public');
-            $data['file_path'] = $path;
+            $validatedData['file'] = $request->file('file');
         }
 
-        DokumenKendaraan::create($data);
+        // Create dokumen kendaraan using service
+        $this->dokumenKendaraanService->createDokumenKendaraan($validatedData);
 
         return redirect()->route('dokumen-kendaraans.index')
             ->with('success', 'Dokumen kendaraan berhasil ditambahkan');
@@ -110,8 +97,8 @@ class DokumenKendaraanController extends Controller
     {
         try {
             Log::info('Menampilkan form edit untuk dokumen kendaraan dengan ID: ' . $id);
-            $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
-            $kendaraans = Kendaraan::all();
+            $dokumenKendaraan = DokumenKendaraan::with('kendaraan')->findOrFail($id);
+            $kendaraans = Kendaraan::select(['id', 'nomor_polisi', 'merek', 'model'])->get();
             return view('paneladmin.dokumen-kendaraan.edit', compact('dokumenKendaraan', 'kendaraans'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             Log::error("Error menampilkan form edit dokumen kendaraan: " . $e->getMessage(), [
@@ -127,34 +114,22 @@ class DokumenKendaraanController extends Controller
     /**
      * Memperbarui resource yang spesifik di storage.
      */
-    public function update(Request $request, string $id)
+    public function update(DokumenKendaraanRequest $request, string $id)
     {
         try {
             Log::info('Memperbarui dokumen kendaraan dengan ID: ' . $id);
             $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
 
-            $request->validate([
-                'kendaraan_id' => 'required|exists:kendaraans,id',
-                'jenis_dokumen' => 'required',
-                'nomor_dokumen' => 'required',
-                'tanggal_terbit' => 'required|date',
-                'tanggal_expired' => 'nullable|date|after:tanggal_terbit',
-                'file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-                'keterangan' => 'nullable|string'
-            ]);
+            // Get validated data from Form Request
+            $validatedData = $request->validated();
 
-            $data = $request->except('file');
-
+            // Add file to validated data if exists
             if ($request->hasFile('file')) {
-                // Hapus file lama jika ada
-                $this->deleteFileIfExists($dokumenKendaraan->file_path);
-
-                $file = $request->file('file');
-                $path = $file->store('dokumen-kendaraan', 'public');
-                $data['file_path'] = $path;
+                $validatedData['file'] = $request->file('file');
             }
 
-            $dokumenKendaraan->update($data);
+            // Update dokumen kendaraan using service
+            $this->dokumenKendaraanService->updateDokumenKendaraan($validatedData, $dokumenKendaraan);
 
             return redirect()->route('dokumen-kendaraans.index')
                 ->with('success', 'Dokumen kendaraan berhasil diperbarui');
@@ -178,10 +153,8 @@ class DokumenKendaraanController extends Controller
             Log::info('Menghapus dokumen kendaraan dengan ID: ' . $id);
             $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
 
-            // Hapus file jika ada
-            $this->deleteFileIfExists($dokumenKendaraan->file_path);
-
-            $dokumenKendaraan->delete();
+            // Delete dokumen kendaraan using service
+            $this->dokumenKendaraanService->deleteDokumenKendaraan($dokumenKendaraan);
 
             return redirect()->route('dokumen-kendaraans.index')
                 ->with('success', 'Dokumen kendaraan berhasil dihapus');
@@ -205,10 +178,8 @@ class DokumenKendaraanController extends Controller
             Log::info('Menghapus file dari dokumen kendaraan dengan ID: ' . $id);
             $dokumenKendaraan = DokumenKendaraan::findOrFail($id);
 
-            // Hapus file jika ada
-            if ($this->deleteFileIfExists($dokumenKendaraan->file_path)) {
-                $dokumenKendaraan->update(['file_path' => null]);
-
+            // Remove file using service
+            if ($this->dokumenKendaraanService->removeFile($dokumenKendaraan)) {
                 return redirect()->route('dokumen-kendaraans.edit', $id)
                     ->with('success', 'File dokumen berhasil dihapus');
             }

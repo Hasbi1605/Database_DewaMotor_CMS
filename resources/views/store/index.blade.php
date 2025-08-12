@@ -390,7 +390,8 @@
 
 <!-- CSS untuk Styling -->
 @push('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/pages/store/store.css') }}">
+<!-- Vite Store Assets -->
+@vite(['resources/css/store.css'])
 @endpush
 
 <!-- JavaScript untuk Interaksi -->

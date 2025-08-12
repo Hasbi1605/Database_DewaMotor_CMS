@@ -17,7 +17,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/pages/store/store.css') }}">
+    <!-- Vite Store Assets -->
+    @vite(['resources/css/store.css'])
     
     @stack('styles')
 </head>

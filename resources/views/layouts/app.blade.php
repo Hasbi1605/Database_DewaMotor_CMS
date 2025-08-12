@@ -11,16 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/admin.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/pages/layouts/admin-enhancements.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/vehicle-photos.css') }}">
+    <!-- Vite Assets -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @stack('styles')
 </head>
@@ -124,14 +119,8 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Custom JS -->
-    <script src="{{ asset('assets/js/admin-enhancements.js') }}"></script>
     
     <!-- Sidebar Toggle Script -->
     <script>
@@ -148,8 +137,6 @@
             if (window.innerWidth >= 768 && isCollapsed) {
                 sidebar.classList.add('collapsed');
             }
-            
-            // Desktop toggle functionality
             sidebarToggle?.addEventListener('click', function() {
                 const isCurrentlyCollapsed = sidebar.classList.contains('collapsed');
                 

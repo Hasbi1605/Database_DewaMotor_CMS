@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AuthService;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Menampilkan form login
      */
     public function showLoginForm()
     {
         // Jika sudah login, redirect ke admin
-        if (Auth::check()) {
+        if ($this->authService->isAuthenticated()) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -26,33 +33,23 @@ class AuthController extends Controller
     /**
      * Menangani permintaan login
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         try {
-            Log::info('Percobaan login untuk email: ' . $request->email);
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|min:6',
-            ], [
-                'email.required' => 'Email wajib diisi',
-                'email.email' => 'Format email tidak valid',
-                'password.required' => 'Password wajib diisi',
-                'password.min' => 'Password minimal 6 karakter',
-            ]);
-
+            // Get validated data from Form Request
             $credentials = $request->only('email', 'password');
             $remember = $request->has('remember');
 
-            if (Auth::attempt($credentials, $remember)) {
+            // Attempt login using service
+            if ($this->authService->attemptLogin($credentials, $remember)) {
                 $request->session()->regenerate();
-                Log::info('Login berhasil untuk user: ' . Auth::user()->email);
 
+                $user = $this->authService->getCurrentUser();
                 return redirect()
                     ->intended(route('admin.dashboard'))
-                    ->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
+                    ->with('success', 'Selamat datang, ' . $user->name . '!');
             }
 
-            Log::warning('Login gagal untuk email: ' . $request->email);
             return back()->withErrors([
                 'email' => 'Email atau password tidak sesuai.',
             ])->withInput($request->except('password'));
@@ -75,10 +72,8 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         try {
-            $userEmail = Auth::user()->email ?? 'unknown';
-            Log::info('User logout: ' . $userEmail);
-
-            Auth::logout();
+            // Logout using service
+            $this->authService->logout();
 
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -110,43 +105,22 @@ class AuthController extends Controller
     /**
      * Menangani registrasi 
      */
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
         try {
-            Log::info('Percobaan registrasi untuk email: ' . $request->email);
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:6|confirmed',
-                'admin_token' => 'required|string',
-            ], [
-                'name.required' => 'Nama wajib diisi',
-                'email.required' => 'Email wajib diisi',
-                'email.email' => 'Format email tidak valid',
-                'email.unique' => 'Email sudah terdaftar',
-                'password.required' => 'Password wajib diisi',
-                'password.min' => 'Password minimal 6 karakter',
-                'password.confirmed' => 'Konfirmasi password tidak sesuai',
-                'admin_token.required' => 'Token admin wajib diisi',
-            ]);
+            // Get validated data from Form Request
+            $validatedData = $request->validated();
 
-            // Validasi token admin
-            $validToken = config('app.admin_registration_token');
-            if ($request->admin_token !== $validToken) {
-                Log::warning('Token admin tidak valid untuk registrasi: ' . $request->email);
+            // Validate admin token using service
+            if (!$this->authService->validateAdminToken($validatedData['admin_token'])) {
+                Log::warning('Token admin tidak valid untuk registrasi: ' . $validatedData['email']);
                 return back()->withErrors([
                     'admin_token' => 'Token admin tidak valid. Hubungi administrator untuk mendapatkan token yang benar.',
                 ])->withInput($request->except(['password', 'password_confirmation', 'admin_token']));
             }
 
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-            Auth::login($user);
-            Log::info('Registrasi berhasil untuk user: ' . $user->email);
+            // Register admin using service
+            $user = $this->authService->registerAdmin($validatedData);
 
             return redirect()
                 ->route('admin.dashboard')

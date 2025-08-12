@@ -17,7 +17,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom Auth CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/pages/auth/auth.css') }}">
+    <!-- Vite Auth Assets -->
+    @vite(['resources/css/auth.css'])
 </head>
 <body>
     <div class="login-container">

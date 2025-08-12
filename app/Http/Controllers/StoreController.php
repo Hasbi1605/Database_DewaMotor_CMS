@@ -13,7 +13,7 @@ class StoreController extends Controller
     {
         try {
             Log::info('Mengakses halaman store/toko');
-            $query = Kendaraan::with(['categories'])
+            $query = Kendaraan::with(['categories', 'dokumen'])
                 ->where('status', 'tersedia');
 
             // Filter berdasarkan kategori
@@ -154,7 +154,7 @@ class StoreController extends Controller
                 ->where('id', '!=', $currentKendaraan->id)
                 ->get();
 
-            // Get current category IDs once
+            // Get current category IDs once for better performance
             $currentCategoryIds = $currentKendaraan->categories->pluck('id')->toArray();
             $currentCategoryTypes = $currentKendaraan->categories->pluck('type')->unique()->toArray();
 

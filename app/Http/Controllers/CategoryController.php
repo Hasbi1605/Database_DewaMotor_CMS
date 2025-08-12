@@ -3,23 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Services\CategoryService;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * Menampilkan daftar resource.
      */
     public function index()
     {
-        $categories = [
-            'class' => Category::getByType('class'),
-            'brand' => Category::getByType('brand'),
-            'document' => Category::getByType('document'),
-            'condition' => Category::getByType('condition')
-        ];
-
+        $categories = $this->categoryService->getCategoriesGroupedByType();
         return view('paneladmin.kelola-kategori.index', compact('categories'));
     }
 
@@ -28,22 +31,20 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $types = ['class', 'brand', 'document', 'condition'];
+        $types = $this->categoryService->getAvailableTypes();
         return view('paneladmin.kelola-kategori.create', compact('types'));
     }
 
     /**
      * Menyimpan resource yang baru dibuat ke storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|in:class,brand,document,condition',
-            'description' => 'nullable|string'
-        ]);
+        // Get validated data from Form Request
+        $validatedData = $request->validated();
 
-        Category::create($validated);
+        // Create category using service
+        $this->categoryService->createCategory($validatedData);
 
         return redirect()->route('categories.index')
             ->with('success', 'Kategori berhasil ditambahkan');
@@ -78,7 +79,7 @@ class CategoryController extends Controller
         try {
             Log::info('Menampilkan form edit untuk kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
-            $types = ['class', 'brand', 'document', 'condition'];
+            $types = $this->categoryService->getAvailableTypes();
             return view('paneladmin.kelola-kategori.edit', compact('category', 'types'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             Log::error("Error menampilkan form edit: " . $e->getMessage(), [
@@ -95,19 +96,17 @@ class CategoryController extends Controller
     /**
      * Memperbarui resource yang spesifik di storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $request, string $id)
     {
         try {
             Log::info('Memperbarui kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
 
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'type' => 'required|string|in:class,brand,document,condition',
-                'description' => 'nullable|string'
-            ]);
+            // Get validated data from Form Request
+            $validatedData = $request->validated();
 
-            $category->update($validated);
+            // Update category using service
+            $this->categoryService->updateCategory($validatedData, $category);
 
             return redirect()->route('categories.index')
                 ->with('success', 'Kategori berhasil diperbarui');
@@ -131,7 +130,9 @@ class CategoryController extends Controller
         try {
             Log::info('Menghapus kategori dengan ID: ' . $id);
             $category = Category::findOrFail($id);
-            $category->delete();
+
+            // Delete category using service
+            $this->categoryService->deleteCategory($category);
 
             return redirect()->route('categories.index')
                 ->with('success', 'Kategori berhasil dihapus');

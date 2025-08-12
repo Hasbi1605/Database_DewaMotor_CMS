@@ -73,7 +73,7 @@ class KendaraanRepository
         $cacheKey = 'store_kendaraans_' . md5(serialize($filters)) . '_page_' . request('page', 1);
 
         return Cache::remember($cacheKey, 900, function () use ($filters, $perPage) {
-            $query = $this->model->with(['categories'])
+            $query = $this->model->with(['categories', 'dokumen'])
                 ->where('status', 'tersedia');
 
             // Apply store-specific filters

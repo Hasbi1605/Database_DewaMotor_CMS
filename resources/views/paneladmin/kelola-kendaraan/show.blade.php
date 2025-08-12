@@ -57,13 +57,9 @@
         </div>
     </div>
 </div>
-                    Kembali
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Body Card berisi Detail Kendaraan -->
+
+<!-- Main Content Card -->
+<div class="card">
     <div class="card-body">
         <div class="row">
             <!-- Section Foto Kendaraan -->
@@ -237,16 +233,21 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Harga Modal</label>
-                            <p class="h5">Rp {{ number_format($kendaraan->harga_modal, 0, ',', '.') }}</p>
+                            <p class="h5 text-muted">Rp {{ number_format($kendaraan->harga_modal, 0, ',', '.') }}</p>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">Harga Jual</label>
-                            <p class="h5 text-success">Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</p>
+                            <p class="h5 fw-bold text-dark">Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</p>
                         </div>
                         @if($kendaraan->status == 'terjual')
                             <div>
                                 <label class="form-label fw-bold">Keuntungan</label>
-                                <p class="h5 text-primary">Rp {{ number_format($kendaraan->harga_jual - $kendaraan->harga_modal, 0, ',', '.') }}</p>
+                                <p class="h5 fw-bold text-success">Rp {{ number_format($kendaraan->harga_jual - $kendaraan->harga_modal, 0, ',', '.') }}</p>
+                            </div>
+                        @else
+                            <div>
+                                <label class="form-label fw-bold">Potensi Keuntungan</label>
+                                <p class="h5 fw-bold text-success">Rp {{ number_format($kendaraan->harga_jual - $kendaraan->harga_modal, 0, ',', '.') }}</p>
                             </div>
                         @endif
                     </div>

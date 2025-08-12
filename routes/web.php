@@ -19,6 +19,26 @@ use App\Http\Controllers\AdminTokenController;
 |
 */
 
+// Test route for debugging vehicle addition data
+Route::get('/test-vehicle-data', function () {
+    $controller = new HomeController();
+    $reflection = new ReflectionClass($controller);
+    $method = $reflection->getMethod('getVehicleAdditionData');
+    $method->setAccessible(true);
+    $result = $method->invoke($controller);
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $result,
+        'summary' => [
+            'monthly_total' => collect($result['monthly'])->sum('count'),
+            'weekly_total' => collect($result['weekly'])->sum('count'),
+            'current_month' => collect($result['monthly'])->last(),
+            'current_week' => collect($result['weekly'])->last()
+        ]
+    ]);
+});
+
 // Store Routes for Customers (Public)
 Route::get('/store', [StoreController::class, 'index'])->name('store.index');
 Route::get('/store/{id}', [StoreController::class, 'show'])->name('store.show');
